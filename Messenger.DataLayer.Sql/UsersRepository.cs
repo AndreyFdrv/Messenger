@@ -1,6 +1,7 @@
 ﻿using System;
 using Messenger.Model;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace Messenger.DataLayer.Sql
 {
@@ -24,7 +25,10 @@ namespace Messenger.DataLayer.Sql
                         "values (@login, @password, @avatar)";
                     command.Parameters.AddWithValue("@login", user.Login);
                     command.Parameters.AddWithValue("@password", user.Password);
-                    command.Parameters.AddWithValue("@avatar", user.Avatar);
+                    if (user.Avatar==null)
+                        command.Parameters.Add("@avatar", SqlDbType.Image).Value = DBNull.Value;
+                    else
+                        command.Parameters.AddWithValue("@avatar", user.Avatar);
                     command.ExecuteNonQuery();
                 }
             }
@@ -81,11 +85,13 @@ namespace Messenger.DataLayer.Sql
                     {
                         if (!reader.Read())
                             throw new ArgumentException($"Пользователь с логином \"{login}\" не найден");
+                        var avatar = reader.GetSqlBinary(reader.GetOrdinal("avatar"));
                         return new User
                         {
                             Login = reader.GetString(reader.GetOrdinal("login")),
                             Password = reader.GetString(reader.GetOrdinal("password")),
-                            Avatar = reader.GetSqlBinary(reader.GetOrdinal("avatar")).Value,
+                            Avatar = reader.IsDBNull(reader.GetOrdinal("avatar"))?
+                                null:reader.GetSqlBinary(reader.GetOrdinal("avatar")).Value
                         };
                     }
                 }

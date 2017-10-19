@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Messenger.Model;
 
 namespace Messenger.DataLayer
@@ -13,5 +12,6 @@ namespace Messenger.DataLayer
         IEnumerable<User> GetChatMembers(Guid id);
         Chat Get(Guid id);
         IEnumerable<Message> GetChatMessages(Guid id);
+        void AddUserToChat(Guid chatId, string login);
     }
 }

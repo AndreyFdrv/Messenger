@@ -13,7 +13,7 @@ namespace Messenger.DataLayer.Sql
             this.ConnectionString = connectionString;
         }
         public Message Create(Chat chat, User author, string text, IEnumerable<byte[]> attached_files, 
-            DateTime date, bool isSelfDestructing, short lifetime = 5)
+            DateTime date, bool isSelfDestructing, Int32 lifetime = 5)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {

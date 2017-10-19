@@ -177,5 +177,20 @@ namespace Messenger.DataLayer.Sql
                 }
             }
         }
+        public void AddUserToChat(Guid chatId, string login)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "insert into UsersInChats ([user login], [chat id]) " +
+                        "values (@login, @id)";
+                    command.Parameters.AddWithValue("@login", login);
+                    command.Parameters.AddWithValue("@id", chatId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
