@@ -31,6 +31,7 @@ namespace Messenger.DataLayer.Sql.Tests
             UsersRepository.Create(author);
             var message = new Message
             {
+                Id = new Guid(),
                 Chat = ChatsRepository.Create(new[] { "testUser" }, "testChat"),
                 Author = author,
                 Text = "testMessage",
@@ -39,27 +40,17 @@ namespace Messenger.DataLayer.Sql.Tests
                 IsSelfDestructing=true,
                 LifeTime=10
             };
-            TempChats.Add(message.Chat.Id);
-            var createResult = MessagesRepository.Create(message.Chat, 
-                author, "testMessage", new[] { Encoding.UTF8.GetBytes("testFile") }, 
-                message.Date, true, 10);
-            message.Id = createResult.Id;
             TempMessages.Add(message.Id);
-            Assert.AreEqual(message.Chat.Id, createResult.Chat.Id);
-            Assert.AreEqual(message.Author.Login, createResult.Author.Login);
-            Assert.AreEqual(message.Text, createResult.Text);
-            Assert.IsTrue(message.AttachedFiles.Single().SequenceEqual(createResult.AttachedFiles.Single()));
-            Assert.IsTrue(MessagesRepository.GetMessageFiles(message.Id).Single().SequenceEqual(MessagesRepository.GetMessageFiles(createResult.Id).Single()));
-            Assert.AreEqual(message.IsSelfDestructing, createResult.IsSelfDestructing);
-            Assert.AreEqual(message.LifeTime, createResult.LifeTime);
-            var getChatsMessagesResult = ChatsRepository.GetChatMessages(message.Chat.Id).Single();
-            Assert.AreEqual(message.Id, getChatsMessagesResult.Id);
-            Assert.AreEqual(message.Chat.Id, getChatsMessagesResult.Chat.Id);
-            Assert.AreEqual(message.Author.Login, getChatsMessagesResult.Author.Login);
-            Assert.AreEqual(message.Text, getChatsMessagesResult.Text);
-            Assert.IsTrue(message.AttachedFiles.Single().SequenceEqual(getChatsMessagesResult.AttachedFiles.Single()));
-            Assert.AreEqual(message.IsSelfDestructing, getChatsMessagesResult.IsSelfDestructing);
-            Assert.AreEqual(message.LifeTime, getChatsMessagesResult.LifeTime);
+            TempChats.Add(message.Chat.Id);
+            MessagesRepository.Create(message);
+            var result = ChatsRepository.GetChatMessages(message.Chat.Id).Single();
+            Assert.AreEqual(message.Id, result.Id);
+            Assert.AreEqual(message.Chat.Id, result.Chat.Id);
+            Assert.AreEqual(message.Author.Login, result.Author.Login);
+            Assert.AreEqual(message.Text, result.Text);
+            Assert.IsTrue(message.AttachedFiles.Single().SequenceEqual(result.AttachedFiles.Single()));
+            Assert.AreEqual(message.IsSelfDestructing, result.IsSelfDestructing);
+            Assert.AreEqual(message.LifeTime, result.LifeTime);
         }
         [TestCleanup]
         public void Clean()

@@ -18,16 +18,9 @@ namespace Messenger.Api.Controllers
         }
         [HttpPost]
         [Route("api/messages")]
-        public Message Create([FromBody] JObject data)
+        public void Create([FromBody] Message message)
         {
-            var chat = data["chat"].ToObject<Chat>();
-            var author = data["author"].ToObject<User>();
-            var text = data["text"].ToObject<string>();
-            var attached_files = data["attached files"].ToObject<IEnumerable<byte[]>>();
-            var date= data["date"].ToObject<DateTime>();
-            var isSelfDestructing= data["isSelfDestructing"].ToObject<bool>();
-            var lifetime=data["lifetime"].ToObject<Int32>();
-            return MessagesRepository.Create(chat, author, text, attached_files, date, isSelfDestructing, lifetime);
+            MessagesRepository.Create(message);
         }
         [HttpDelete]
         [Route("api/messages/{id}")]

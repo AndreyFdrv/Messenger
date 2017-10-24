@@ -12,25 +12,13 @@ namespace Messenger.DataLayer.Sql
         {
             this.ConnectionString = connectionString;
         }
-        public Message Create(Chat chat, User author, string text, IEnumerable<byte[]> attached_files, 
-            DateTime date, bool isSelfDestructing, Int32 lifetime = 5)
+        public void Create(Message message)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
                 using (var transaction = connection.BeginTransaction())
                 {
-                    var message = new Message
-                    {
-                        Id = Guid.NewGuid(),
-                        Chat = chat,
-                        Author = author,
-                        Text=text,
-                        AttachedFiles=attached_files,
-                        Date=date,
-                        IsSelfDestructing=isSelfDestructing,
-                        LifeTime=lifetime
-                    };
                     using (var command = connection.CreateCommand())
                     {
                         command.Transaction = transaction;
@@ -46,7 +34,7 @@ namespace Messenger.DataLayer.Sql
                         command.Parameters.AddWithValue("@lifetime", message.LifeTime);
                         command.ExecuteNonQuery();
                     }
-                    foreach (var file in attached_files)
+                    foreach (var file in message.AttachedFiles)
                     {
                         using (var command = connection.CreateCommand())
                         {
@@ -60,7 +48,6 @@ namespace Messenger.DataLayer.Sql
                         }
                     }
                     transaction.Commit();
-                    return message;
                 }
             }
         }
