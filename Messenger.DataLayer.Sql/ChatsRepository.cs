@@ -37,14 +37,22 @@ namespace Messenger.DataLayer.Sql
                         command.Parameters.AddWithValue("@name", chat.Name);
                         command.ExecuteNonQuery();
                     }
-                    foreach (var userId in members)
+                    foreach (var userLogin in members)
                     {
+                        try
+                        {
+                            UsersRepository.Get(userLogin);
+                        }
+                        catch(ArgumentException)
+                        {
+                            throw new ArgumentException($"Список членов чата содержит несуществующего пользователя {userLogin}");
+                        }
                         using (var command = connection.CreateCommand())
                         {
                             command.Transaction = transaction;
                             command.CommandText = "insert into UsersInChats ([user login], [chat id])" +
                                 " values (@login, @chat_id)";
-                            command.Parameters.AddWithValue("@login", userId);
+                            command.Parameters.AddWithValue("@login", userLogin);
                             command.Parameters.AddWithValue("@chat_id", chat.Id);
                             command.ExecuteNonQuery();
                         }
@@ -80,9 +88,16 @@ namespace Messenger.DataLayer.Sql
                 }
             }
         }
-
         public void Delete(Guid id)
         {
+            try
+            {
+                Get(id);
+            }
+            catch(ArgumentException)
+            {
+                throw new ArgumentException($"Чат с id {id} не найден");
+            }
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
@@ -106,9 +121,16 @@ namespace Messenger.DataLayer.Sql
                 }
             }
         }
-
         public IEnumerable<User> GetChatMembers(Guid id)
         {
+            try
+            {
+                Get(id);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Чат с id {id} не найден");
+            }
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
@@ -137,11 +159,12 @@ namespace Messenger.DataLayer.Sql
                     using (var reader = command.ExecuteReader())
                     {
                         if (!reader.Read())
-                            throw new ArgumentException($"Чат с id \"{id}\" не найден");
+                            throw new ArgumentException($"Чат с id {id} не найден");
                         return new Chat
                         {
                             Id = reader.GetGuid(reader.GetOrdinal("id")),
-                            Name = reader.GetString(reader.GetOrdinal("name")),
+                            Name = reader.IsDBNull(reader.GetOrdinal("name")) ?
+                                null : reader.GetString(reader.GetOrdinal("name")),
                             Members=GetChatMembers(reader.GetGuid(reader.GetOrdinal("id")))
                         };
                     }
@@ -179,6 +202,22 @@ namespace Messenger.DataLayer.Sql
         }
         public void AddUserToChat(Guid chatId, string login)
         {
+            try
+            {
+                Get(chatId);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Чат с id {chatId} не найден");
+            }
+            try
+            {
+                UsersRepository.Get(login);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Пользователь с логином {chatId} не найден");
+            }
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();

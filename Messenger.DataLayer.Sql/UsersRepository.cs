@@ -33,9 +33,16 @@ namespace Messenger.DataLayer.Sql
                 }
             }
         }
-
         public void Delete(string login)
         {
+            try
+            {
+                Get(login);
+            }
+            catch(ArgumentException ex)
+            {
+                throw ex;
+            }
             using (var connection = new SqlConnection(СonnectionString))
             {
                 connection.Open();
@@ -84,7 +91,7 @@ namespace Messenger.DataLayer.Sql
                     using (var reader = command.ExecuteReader())
                     {
                         if (!reader.Read())
-                            throw new ArgumentException($"Пользователь с логином \"{login}\" не найден");
+                            throw new ArgumentException($"Пользователь с логином {login} не найден");
                         var avatar = reader.GetSqlBinary(reader.GetOrdinal("avatar"));
                         return new User
                         {

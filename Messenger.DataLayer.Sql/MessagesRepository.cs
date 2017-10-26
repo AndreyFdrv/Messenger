@@ -8,12 +8,76 @@ namespace Messenger.DataLayer.Sql
     public class MessagesRepository:IMessagesRepository
     {
         private readonly string ConnectionString;
+
+        private bool IsUserExist(string login)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "select top(1) login " +
+                        "from Users where login = @login";
+                    command.Parameters.AddWithValue("@login", login);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            return true;
+                        return false;
+                    }
+                }
+            }
+        }
+        private bool IsChatExist(Guid id)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "select top(1) id " +
+                        "from Chats where id = @id";
+                    command.Parameters.AddWithValue("@id", id);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            return true;
+                        return false;
+                    }
+                }
+            }
+        }
+        private bool IsMessageExist(Guid id)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "select top(1) id " +
+                        "from Messages where id = @id";
+                    command.Parameters.AddWithValue("@id", id);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            return true;
+                        return false;
+                    }
+                }
+            }
+        }
         public MessagesRepository(string connectionString)
         {
             this.ConnectionString = connectionString;
         }
         public void Create(Message message)
         {
+            if (!IsUserExist(message.Author.Login))
+                throw new ArgumentException($"Пользователь с логином " +
+                    $"{message.Author.Login} не найден");
+            if (!IsChatExist(message.Chat.Id))
+                throw new ArgumentException($"Чат с id " +
+                    $"{message.Chat.Id} не найден");
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
@@ -53,6 +117,9 @@ namespace Messenger.DataLayer.Sql
         }
         public IEnumerable<byte[]> GetMessageFiles(Guid id)
         {
+            if (!IsMessageExist(id))
+                throw new ArgumentException($"Сообщение с id " +
+                    $"{id} не найдено");
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
@@ -72,6 +139,9 @@ namespace Messenger.DataLayer.Sql
         }
         public void Delete(Guid id)
         {
+            if (!IsMessageExist(id))
+                throw new ArgumentException($"Сообщение с id " +
+                    $"{id} не найдено");
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
