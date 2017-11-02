@@ -98,17 +98,20 @@ namespace Messenger.DataLayer.Sql
                         command.Parameters.AddWithValue("@lifetime", message.LifeTime);
                         command.ExecuteNonQuery();
                     }
-                    foreach (var file in message.AttachedFiles)
+                    if (message.AttachedFiles != null)
                     {
-                        using (var command = connection.CreateCommand())
+                        foreach (var file in message.AttachedFiles)
                         {
-                            command.Transaction = transaction;
-                            command.CommandText = "insert into AttachedFiles (id, [message id], [content])" +
-                                " values (@id, @message, @content)";
-                            command.Parameters.AddWithValue("@id", new Guid());
-                            command.Parameters.AddWithValue("@message", message.Id);
-                            command.Parameters.AddWithValue("@content", file);
-                            command.ExecuteNonQuery();
+                            using (var command = connection.CreateCommand())
+                            {
+                                command.Transaction = transaction;
+                                command.CommandText = "insert into AttachedFiles (id, [message id], [content])" +
+                                    " values (@id, @message, @content)";
+                                command.Parameters.AddWithValue("@id", new Guid());
+                                command.Parameters.AddWithValue("@message", message.Id);
+                                command.Parameters.AddWithValue("@content", file);
+                                command.ExecuteNonQuery();
+                            }
                         }
                     }
                     transaction.Commit();

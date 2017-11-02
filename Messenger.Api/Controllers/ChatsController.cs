@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Http;
 using Messenger.Model;
 using Messenger.DataLayer.Sql;
@@ -109,14 +110,14 @@ namespace Messenger.Api.Controllers
         }
         [HttpGet]
         [Route("api/chats/{id}/messages")]
-        public IEnumerable<Message> GetChatMessages(Guid id)
+        public List<Message> GetChatMessages(Guid id)
         {
             Logger.Trace("Попытка получить сообщения чата с id {0}", id);
             try
             {
                 var result= ChatsRepository.GetChatMessages(id);
                 Logger.Trace("Список сообщений чата с id {0} получен", id);
-                return result;
+                return result.ToList();
             }
             catch (ArgumentException ex)
             {

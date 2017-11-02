@@ -193,7 +193,8 @@ namespace Messenger.DataLayer.Sql
                                 AttachedFiles = MessageRepository.GetMessageFiles(reader.GetGuid(reader.GetOrdinal("id"))),
                                 Date = reader.GetDateTime(reader.GetOrdinal("date")),
                                 IsSelfDestructing = reader.GetBoolean(reader.GetOrdinal("is self-destructing")),
-                                LifeTime = reader.GetInt32(reader.GetOrdinal("lifetime"))
+                                LifeTime = reader.IsDBNull(reader.GetOrdinal("lifetime")) ?
+                                    10 : reader.GetInt32(reader.GetOrdinal("lifetime"))
                             };
                         }
                     }
@@ -202,21 +203,29 @@ namespace Messenger.DataLayer.Sql
         }
         public void AddUserToChat(Guid chatId, string login)
         {
+            Chat chat;
             try
             {
-                Get(chatId);
+                chat=Get(chatId);
             }
             catch (ArgumentException)
             {
                 throw new ArgumentException($"Чат с id {chatId} не найден");
             }
+            User user;
             try
             {
-                UsersRepository.Get(login);
+               user=UsersRepository.Get(login);
             }
             catch (ArgumentException)
             {
-                throw new ArgumentException($"Пользователь с логином {chatId} не найден");
+                throw new ArgumentException($"Пользователь с логином {login} не найден");
+            }
+            foreach(var chatMember in chat.Members)
+            {
+                if(chatMember.Login==login)
+                    throw new ArgumentException($"Пользователь с логином {login} уже " +
+                        $"находится в чате с id {chatId}, добавление не произведено");
             }
             using (var connection = new SqlConnection(ConnectionString))
             {
