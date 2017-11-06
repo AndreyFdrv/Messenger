@@ -92,7 +92,6 @@ namespace Messenger.DataLayer.Sql
                     {
                         if (!reader.Read())
                             throw new ArgumentException($"Пользователь с логином {login} не найден");
-                        var avatar = reader.GetSqlBinary(reader.GetOrdinal("avatar"));
                         return new User
                         {
                             Login = reader.GetString(reader.GetOrdinal("login")),
@@ -101,6 +100,28 @@ namespace Messenger.DataLayer.Sql
                                 null:reader.GetSqlBinary(reader.GetOrdinal("avatar")).Value
                         };
                     }
+                }
+            }
+        }
+        public void SetAvatar(string login, byte[] avatar)
+        {
+            try
+            {
+                Get(login);
+            }
+            catch(ArgumentException ex)
+            {
+                throw ex;
+            }
+            using (var connection = new SqlConnection(СonnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "update Users set avatar=@avatar where login = @login";
+                    command.Parameters.AddWithValue("@login", login);
+                    command.Parameters.AddWithValue("@avatar", avatar);
+                    command.ExecuteNonQuery();
                 }
             }
         }

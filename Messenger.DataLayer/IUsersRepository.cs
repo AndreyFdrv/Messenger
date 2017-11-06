@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Messenger.Model;
+﻿using Messenger.Model;
 
 namespace Messenger.DataLayer
 {
@@ -10,5 +7,6 @@ namespace Messenger.DataLayer
         void Create(User user);
         void Delete(string login);
         User Get(string login);
+        void SetAvatar(string login, byte[] avatar);
     }
 }

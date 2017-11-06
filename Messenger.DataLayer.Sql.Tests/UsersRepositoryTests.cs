@@ -24,7 +24,7 @@ namespace Messenger.DataLayer.Sql.Tests
             {
                 Login = "testUser",
                 Password = "password",
-                Avatar = Encoding.UTF8.GetBytes("testФvatar")
+                Avatar = Encoding.UTF8.GetBytes("testAvatar")
             };
             UsersRepository.Create(user);
             TempUsers.Add(user.Login);
@@ -32,6 +32,10 @@ namespace Messenger.DataLayer.Sql.Tests
             Assert.AreEqual(user.Login, result.Login);
             Assert.AreEqual(user.Password, result.Password);
             Assert.IsTrue(user.Avatar.SequenceEqual(result.Avatar));
+            var newAvatar = Encoding.UTF8.GetBytes("newAvatar");
+            UsersRepository.SetAvatar(user.Login, newAvatar);
+            user = UsersRepository.Get(user.Login);
+            Assert.IsTrue(user.Avatar.SequenceEqual(newAvatar));
         }
         [TestMethod]
         public void ShouldStartChatWithUser()

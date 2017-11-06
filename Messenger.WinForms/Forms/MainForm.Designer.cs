@@ -34,6 +34,7 @@
             this.btnGoToChoosenChat = new System.Windows.Forms.Button();
             this.btnCreateChat = new System.Windows.Forms.Button();
             this.btnAddUserToChat = new System.Windows.Forms.Button();
+            this.btnChangeAvatar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblChats
@@ -74,7 +75,7 @@
             // 
             this.btnCreateChat.Location = new System.Drawing.Point(249, 107);
             this.btnCreateChat.Name = "btnCreateChat";
-            this.btnCreateChat.Size = new System.Drawing.Size(105, 39);
+            this.btnCreateChat.Size = new System.Drawing.Size(105, 28);
             this.btnCreateChat.TabIndex = 4;
             this.btnCreateChat.Text = "Создать чат";
             this.btnCreateChat.UseVisualStyleBackColor = true;
@@ -82,7 +83,7 @@
             // 
             // btnAddUserToChat
             // 
-            this.btnAddUserToChat.Location = new System.Drawing.Point(249, 152);
+            this.btnAddUserToChat.Location = new System.Drawing.Point(249, 141);
             this.btnAddUserToChat.Name = "btnAddUserToChat";
             this.btnAddUserToChat.Size = new System.Drawing.Size(105, 54);
             this.btnAddUserToChat.TabIndex = 5;
@@ -90,11 +91,22 @@
             this.btnAddUserToChat.UseVisualStyleBackColor = true;
             this.btnAddUserToChat.Click += new System.EventHandler(this.btnAddUserToChat_Click);
             // 
+            // btnChangeAvatar
+            // 
+            this.btnChangeAvatar.Location = new System.Drawing.Point(250, 201);
+            this.btnChangeAvatar.Name = "btnChangeAvatar";
+            this.btnChangeAvatar.Size = new System.Drawing.Size(104, 31);
+            this.btnChangeAvatar.TabIndex = 6;
+            this.btnChangeAvatar.Text = "Сменить аватар";
+            this.btnChangeAvatar.UseVisualStyleBackColor = true;
+            this.btnChangeAvatar.Click += new System.EventHandler(this.btnChangeAvatar_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(359, 285);
+            this.Controls.Add(this.btnChangeAvatar);
             this.Controls.Add(this.btnAddUserToChat);
             this.Controls.Add(this.btnCreateChat);
             this.Controls.Add(this.btnGoToChoosenChat);
@@ -119,5 +131,6 @@
         private System.Windows.Forms.Button btnGoToChoosenChat;
         private System.Windows.Forms.Button btnCreateChat;
         private System.Windows.Forms.Button btnAddUserToChat;
+        private System.Windows.Forms.Button btnChangeAvatar;
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Messenger.Model;
@@ -78,6 +80,36 @@ namespace Messenger.WinForms.Forms
                 var chat = Chats[lstChats.SelectedIndex];
                 var message = Client.AddUserToChat(dialogForm.Login, chat.Id);
                 MessageBox.Show(message);
+            }
+        }
+
+        private void btnChangeAvatar_Click(object sender, EventArgs e)
+        {
+            Stream stream = null;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = "c:\\";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    if ((stream = openFileDialog.OpenFile()) != null)
+                    {
+                        using (stream)
+                        {
+                            var img = Bitmap.FromStream(stream);
+                            using (var ms = new MemoryStream())
+                            {
+                                img.Save(ms, img.RawFormat);
+                                AvatarAndLoginControl.SetAvatar(ms.ToArray());
+                                Client.SetAvatar(User.Login, ms.ToArray());
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Не удалось открыть файл");
+                }
             }
         }
     }

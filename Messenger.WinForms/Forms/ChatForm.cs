@@ -38,7 +38,7 @@ namespace Messenger.WinForms.Forms
 
         private void TimerTick(object sender, EventArgs e)
         {
-            var messages = Client.GetChatMessages(Chat.Id);
+            var messages = Client.GetChatMessages(Chat.Id).OrderByDescending(x => x.Date).ToList();
             if (messages.Count != Messages.Count)
                 UpdateMessages();
             else

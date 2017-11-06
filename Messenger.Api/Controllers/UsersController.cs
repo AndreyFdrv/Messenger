@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using NLog;
 using System.Net;
 using System.Net.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Messenger.Api.Controllers
 {
@@ -25,13 +27,17 @@ namespace Messenger.Api.Controllers
         }
         [HttpGet]
         [Route("api/users/{login}")]
-        public User Get(string login)
+        public JObject Get(string login)
         {
             Logger.Trace("Попытка найти пользователя с логином {0}", login);
             try
             {
-                var result = UsersRepository.Get(login);
+                var user = UsersRepository.Get(login);
                 Logger.Trace("Пользователь с логином {0} найден", login);
+                var result = new JObject();
+                result.Add("Login", user.Login);
+                result.Add("Password", user.Password);
+                result.Add("Avatar", Convert.ToBase64String(user.Avatar));
                 return result;
             }
             catch(ArgumentException ex)
@@ -82,6 +88,27 @@ namespace Messenger.Api.Controllers
                 var result = ChatsRepository.GetUserChats(login);
                 Logger.Trace("Cписок чатов пользователя с логином {0} получен", login);
                 return result.ToList();
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error(ex.Message);
+                var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                throw new HttpResponseException(resp);
+            }
+        }
+        [HttpPut]
+        [Route("api/users/{login}/set avatar")]
+        public void SetUserAvatar(string login, [FromBody] JObject data)
+        {
+            Logger.Trace("Попытка сменить аватар пользователю с логином {0}", login);
+            var avatar = data["avatar"].ToObject<byte[]>();
+            try
+            {
+                UsersRepository.SetAvatar(login, avatar);
+                Logger.Trace("Аватар пользователя с логином {0} изменён", login);
             }
             catch (ArgumentException ex)
             {

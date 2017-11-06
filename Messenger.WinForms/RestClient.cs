@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using RestSharp;
 using Newtonsoft.Json;
 using Messenger.Model;
+using Newtonsoft.Json.Linq;
 
 namespace Messenger.WinForms
 {
@@ -18,10 +19,16 @@ namespace Messenger.WinForms
         {
             var request = new RestRequest("api/users/{login}", Method.GET);
             request.AddUrlSegment("login", login);
-            var response = Client.Execute<User>(request);
+            var response = Client.Execute<JObject>(request);
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return null;
-            User user=response.Data;
+            var responseData = JsonConvert.DeserializeObject<JObject>(response.Content);
+            User user = new User
+            {
+                Login = responseData["Login"].ToObject<string>(),
+                Password = responseData["Password"].ToObject<string>(),
+                Avatar = responseData["Avatar"].ToObject<byte[]>()
+            };
             if (user.Password != password)
                 return null;
             return user;
@@ -107,6 +114,18 @@ namespace Messenger.WinForms
             if (response.StatusCode == HttpStatusCode.NoContent)
                 return "Пользователь добавлен в чат";
             return "Не удалось добавить пользователя в чат";
+        }
+        public void SetAvatar(string login, byte[] image)
+        {
+            var request = new RestRequest("api/users/{login}/set avatar", Method.PUT);
+            request.AddUrlSegment("login", login);
+            request.RequestFormat = DataFormat.Json;
+            request.AddBody(
+            new
+            {
+                avatar = image
+            });
+            Client.Execute(request);
         }
     }
 }

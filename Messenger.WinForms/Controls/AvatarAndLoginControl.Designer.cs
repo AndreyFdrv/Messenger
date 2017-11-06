@@ -39,6 +39,7 @@
             this.pctAvatar.Location = new System.Drawing.Point(3, 3);
             this.pctAvatar.Name = "pctAvatar";
             this.pctAvatar.Size = new System.Drawing.Size(30, 30);
+            this.pctAvatar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pctAvatar.TabIndex = 0;
             this.pctAvatar.TabStop = false;
             // 
