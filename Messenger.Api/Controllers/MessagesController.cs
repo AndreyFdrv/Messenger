@@ -63,7 +63,7 @@ namespace Messenger.Api.Controllers
         }
         [HttpGet]
         [Route("api/messages/{id}/attached files")]
-        public IEnumerable<byte[]> GetMessageFiles(Guid id)
+        public IEnumerable<AttachedFile> GetMessageFiles(Guid id)
         {
             Logger.Trace("Попытка получения списка прикреплённых файлов сообщения " +
                 "c id {0}", id);

@@ -93,9 +93,9 @@
             // 
             // btnChangeAvatar
             // 
-            this.btnChangeAvatar.Location = new System.Drawing.Point(250, 201);
+            this.btnChangeAvatar.Location = new System.Drawing.Point(249, 201);
             this.btnChangeAvatar.Name = "btnChangeAvatar";
-            this.btnChangeAvatar.Size = new System.Drawing.Size(104, 31);
+            this.btnChangeAvatar.Size = new System.Drawing.Size(105, 31);
             this.btnChangeAvatar.TabIndex = 6;
             this.btnChangeAvatar.Text = "Сменить аватар";
             this.btnChangeAvatar.UseVisualStyleBackColor = true;

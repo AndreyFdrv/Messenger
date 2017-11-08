@@ -105,11 +105,12 @@ namespace Messenger.DataLayer.Sql
                             using (var command = connection.CreateCommand())
                             {
                                 command.Transaction = transaction;
-                                command.CommandText = "insert into AttachedFiles (id, [message id], [content])" +
-                                    " values (@id, @message, @content)";
-                                command.Parameters.AddWithValue("@id", new Guid());
+                                command.CommandText = "insert into AttachedFiles (id, name, [message id], [content])" +
+                                    " values (@id, @name, @message, @content)";
+                                command.Parameters.AddWithValue("@id", Guid.NewGuid());
+                                command.Parameters.AddWithValue("@name", file.Name);
                                 command.Parameters.AddWithValue("@message", message.Id);
-                                command.Parameters.AddWithValue("@content", file);
+                                command.Parameters.AddWithValue("@content", file.Content);
                                 command.ExecuteNonQuery();
                             }
                         }
@@ -118,7 +119,7 @@ namespace Messenger.DataLayer.Sql
                 }
             }
         }
-        public IEnumerable<byte[]> GetMessageFiles(Guid id)
+        public IEnumerable<AttachedFile> GetMessageFiles(Guid id)
         {
             if (!IsMessageExist(id))
                 throw new ArgumentException($"Сообщение с id " +
@@ -128,13 +129,17 @@ namespace Messenger.DataLayer.Sql
                 connection.Open();
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "select [content] from AttachedFiles where [message id]=@id";
+                    command.CommandText = "select name, [content] from AttachedFiles where [message id]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     using (var reader = command.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
-                            yield return reader.GetSqlBinary(reader.GetOrdinal("content")).Value;
+                            yield return new AttachedFile
+                            {
+                                Name = reader.GetString(reader.GetOrdinal("name")),
+                                Content = reader.GetSqlBinary(reader.GetOrdinal("content")).Value,
+                            };
                         }
                     }
                 }

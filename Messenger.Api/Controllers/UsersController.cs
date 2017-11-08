@@ -37,7 +37,7 @@ namespace Messenger.Api.Controllers
                 var result = new JObject();
                 result.Add("Login", user.Login);
                 result.Add("Password", user.Password);
-                result.Add("Avatar", Convert.ToBase64String(user.Avatar));
+                result.Add("Avatar", user.Avatar==null?null:Convert.ToBase64String(user.Avatar));
                 return result;
             }
             catch(ArgumentException ex)

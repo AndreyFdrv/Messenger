@@ -45,6 +45,8 @@ namespace Messenger.WinForms.Forms
 
         private void btnGoToChoosenChat_Click(object sender, EventArgs e)
         {
+            if (lstChats.SelectedIndex == -1)
+                return;
             var chat = Chats[lstChats.SelectedIndex];
             var chatForm = new ChatForm(User, chat, Client);
             chatForm.Show();
@@ -100,13 +102,13 @@ namespace Messenger.WinForms.Forms
                             using (var ms = new MemoryStream())
                             {
                                 img.Save(ms, img.RawFormat);
-                                AvatarAndLoginControl.SetAvatar(ms.ToArray());
                                 Client.SetAvatar(User.Login, ms.ToArray());
+                                AvatarAndLoginControl.SetAvatar(ms.ToArray());
                             }
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     MessageBox.Show("Не удалось открыть файл");
                 }

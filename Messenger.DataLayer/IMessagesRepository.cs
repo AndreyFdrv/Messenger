@@ -9,6 +9,6 @@ namespace Messenger.DataLayer
     {
         void Create(Message message);
         void Delete(Guid id);
-        IEnumerable<byte[]> GetMessageFiles(Guid id);
+        IEnumerable<AttachedFile> GetMessageFiles(Guid id);
     }
 }

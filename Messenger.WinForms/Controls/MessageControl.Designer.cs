@@ -30,6 +30,8 @@
         {
             this.AvatarAndLoginControl = new Messenger.WinForms.Controls.AvatarAndLoginControl();
             this.txtText = new System.Windows.Forms.RichTextBox();
+            this.lblAttachedFiles = new System.Windows.Forms.Label();
+            this.lstAttachedFiles = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // AvatarAndLoginControl
@@ -49,15 +51,36 @@
             this.txtText.TabIndex = 1;
             this.txtText.Text = "";
             // 
+            // lblAttachedFiles
+            // 
+            this.lblAttachedFiles.AutoSize = true;
+            this.lblAttachedFiles.Location = new System.Drawing.Point(39, 93);
+            this.lblAttachedFiles.Name = "lblAttachedFiles";
+            this.lblAttachedFiles.Size = new System.Drawing.Size(129, 13);
+            this.lblAttachedFiles.TabIndex = 2;
+            this.lblAttachedFiles.Text = "Прикреплённые файлы:";
+            // 
+            // lstAttachedFiles
+            // 
+            this.lstAttachedFiles.FormattingEnabled = true;
+            this.lstAttachedFiles.Location = new System.Drawing.Point(42, 110);
+            this.lstAttachedFiles.Name = "lstAttachedFiles";
+            this.lstAttachedFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.lstAttachedFiles.Size = new System.Drawing.Size(172, 43);
+            this.lstAttachedFiles.TabIndex = 3;
+            // 
             // MessageControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.lstAttachedFiles);
+            this.Controls.Add(this.lblAttachedFiles);
             this.Controls.Add(this.txtText);
             this.Controls.Add(this.AvatarAndLoginControl);
             this.Name = "MessageControl";
-            this.Size = new System.Drawing.Size(224, 99);
+            this.Size = new System.Drawing.Size(224, 161);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -65,5 +88,7 @@
 
         private AvatarAndLoginControl AvatarAndLoginControl;
         private System.Windows.Forms.RichTextBox txtText;
+        private System.Windows.Forms.Label lblAttachedFiles;
+        private System.Windows.Forms.ListBox lstAttachedFiles;
     }
 }
