@@ -91,7 +91,7 @@ namespace Messenger.WinForms
             });
             Client.Execute(request);
         }
-        private Chat GetChat(Guid id)
+        public Chat GetChat(Guid id)
         {
             var request = new RestRequest("api/chats/{id}", Method.GET);
             request.AddUrlSegment("id", id.ToString());
@@ -125,6 +125,43 @@ namespace Messenger.WinForms
             {
                 avatar = image
             });
+            Client.Execute(request);
+        }
+        public void AddUserIsReadingChat(string login, Chat chat)
+        {
+            var request = new RestRequest("api/chats/{id}/add user which is reading/{login}", Method.PUT);
+            request.AddUrlSegment("id", chat.Id.ToString());
+            request.AddUrlSegment("login", login);
+            Client.Execute(request);
+            chat = GetChat(chat.Id);
+        }
+        public void DeleteUserIsReadingChat(string login, Chat chat)
+        {
+            var request = new RestRequest("api/chats/{id}/delete user which is reading/{login}", Method.PUT);
+            request.AddUrlSegment("id", chat.Id.ToString());
+            request.AddUrlSegment("login", login);
+            Client.Execute(request);
+            chat = GetChat(chat.Id);
+        }
+        private Message GetMessage(Guid id)
+        {
+            var request = new RestRequest("api/message/{id}", Method.GET);
+            request.AddUrlSegment("id", id.ToString());
+            var response = Client.Execute(request);
+            return JsonConvert.DeserializeObject<Message>(response.Content);
+        }
+        public void AddUserHasReadMessage(string login, Message message)
+        {
+            var request=new RestRequest("api/chats/{id}/add user which has read message/{login}", Method.PUT);
+            request.AddUrlSegment("id", message.Id.ToString());
+            request.AddUrlSegment("login", login);
+            Client.Execute(request);
+            message = GetMessage(message.Id);
+        }
+        public void DeleteMessage(Guid id)
+        {
+            var request = new RestRequest("api/messages/{id}", Method.DELETE);
+            request.AddUrlSegment("id", id.ToString());
             Client.Execute(request);
         }
     }

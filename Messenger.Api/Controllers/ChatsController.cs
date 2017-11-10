@@ -115,7 +115,7 @@ namespace Messenger.Api.Controllers
             Logger.Trace("Попытка получить сообщения чата с id {0}", id);
             try
             {
-                var result= ChatsRepository.GetChatMessages(id);
+                var result = ChatsRepository.GetChatMessages(id);
                 Logger.Trace("Список сообщений чата с id {0} получен", id);
                 return result.ToList();
             }
@@ -140,6 +140,46 @@ namespace Messenger.Api.Controllers
                 Logger.Trace("Пользователь {0} добавлен в чат с id {1}", login, id);
             }
             catch(ArgumentException ex)
+            {
+                Logger.Error(ex.Message);
+                var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                throw new HttpResponseException(resp);
+            }
+        }
+        [HttpPut]
+        [Route("api/chats/{id}/add user which is reading/{login}")]
+        public void AddUserisReadingChat(Guid id, string login)
+        {
+            Logger.Trace("Пользователь {0} пытается открыть чат с id {1}", login, id);
+            try
+            {
+                ChatsRepository.AddUserIsReadingChat(login, id);
+                Logger.Trace("Пользователь {0} открыл чат с id {1}", login, id);
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error(ex.Message);
+                var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                throw new HttpResponseException(resp);
+            }
+        }
+        [HttpPut]
+        [Route("api/chats/{id}/delete user which is reading/{login}")]
+        public void DeleteUserisReadingChat(Guid id, string login)
+        {
+            Logger.Trace("Пользователь {0} пытается закрыть чат с id {1}", login, id);
+            try
+            {
+                ChatsRepository.DeleteUserIsReadingChat(login, id);
+                Logger.Trace("Пользователь {0} закрыл чат с id {1}", login, id);
+            }
+            catch (ArgumentException ex)
             {
                 Logger.Error(ex.Message);
                 var resp = new HttpResponseMessage(HttpStatusCode.NotFound)

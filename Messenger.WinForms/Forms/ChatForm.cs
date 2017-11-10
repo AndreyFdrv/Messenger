@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Threading;
 using Messenger.Model;
 using Messenger.WinForms.Controls;
 
@@ -15,6 +16,8 @@ namespace Messenger.WinForms.Forms
         private RestClient Client;
         private List<Messenger.Model.Message> Messages;
         private List<AttachedFile> AttachedFiles;
+        private bool IsMessageSelfDestrusting;
+        private Int32 LifeTime;
         public ChatForm(User user, Chat chat, RestClient client)
         {
             InitializeComponent();
@@ -23,7 +26,7 @@ namespace Messenger.WinForms.Forms
             this.Client = client;
         }
 
-        private void ChatForm_Load(object sender, System.EventArgs e)
+        private void ChatForm_Load(object sender, EventArgs e)
         {
             Text = Chat.Name;
             AvatarAndLoginControl.SetAvatar(User.Avatar);
@@ -32,11 +35,21 @@ namespace Messenger.WinForms.Forms
             flwMessages.FlowDirection = FlowDirection.TopDown;
             flwMessages.WrapContents = false;
             UpdateMessages();
-            var timer = new Timer();
+            var timer = new System.Windows.Forms.Timer();
             timer.Interval = 1000;
             timer.Tick += new EventHandler(TimerTick);
             timer.Enabled = true;
             AttachedFiles = new List<AttachedFile>();
+            Client.AddUserIsReadingChat(User.Login, Chat);
+            IsMessageSelfDestrusting = false;
+            LifeTime = 0;
+            foreach (var message in Messages)
+            {
+                if (!message.IsSelfDestructing)
+                    continue;
+                Client.AddUserHasReadMessage(User.Login, message);
+                TryToDeleteMessage(message);
+            }
         }
 
         private void TimerTick(object sender, EventArgs e)
@@ -66,6 +79,8 @@ namespace Messenger.WinForms.Forms
 
         private void btnSend_Click(object sender, EventArgs e)
         {
+            var usersHaveReadMessage=new List<User>();
+            usersHaveReadMessage.Add(User);
             var message = new Messenger.Model.Message
             {
                 Id = Guid.NewGuid(),
@@ -74,9 +89,18 @@ namespace Messenger.WinForms.Forms
                 Text = txtMessage.Text,
                 AttachedFiles = AttachedFiles,
                 Date = DateTime.Now,
-                IsSelfDestructing = false
+                IsSelfDestructing = IsMessageSelfDestrusting,
+                LifeTime = LifeTime,
+                UsersHaveReadMessage=usersHaveReadMessage
             };
             Client.CreateMessage(message);
+            Chat = Client.GetChat(Chat.Id);
+            if (IsMessageSelfDestrusting)
+            {
+                foreach (var user in Chat.UsersAreReadingChat)
+                    Client.AddUserHasReadMessage(user.Login, message);
+            }
+            TryToDeleteMessage(message);
             AttachedFiles.Clear();
             lstAttachedFiles.Items.Clear();
             txtMessage.Text = "";
@@ -133,6 +157,57 @@ namespace Messenger.WinForms.Forms
                 }
                 selected_indices.Clear();
             }
+        }
+
+        private async void DeleteMessage(Messenger.Model.Message message)
+        {
+            Thread.Sleep(message.LifeTime);
+            Client.DeleteMessage(message.Id);
+        }
+
+        private void TryToDeleteMessage(Messenger.Model.Message message)
+        {
+            if(message.UsersHaveReadMessage.Count()==Chat.Members.Count())
+            {
+                DeleteMessage(message);
+            }
+        }
+
+        private void btnMakeMessageSelfDestructing_Click(object sender, EventArgs e)
+        {
+            if (IsMessageSelfDestrusting)
+            {
+                IsMessageSelfDestrusting = false;
+                LifeTime = 0;
+                btnMakeMessageSelfDestructing.Text = "Сделать сообщение самоудаляющимся";
+                return;
+            }
+            var dialogForm = new MakeMessageSelfDestructingForm();
+            if (dialogForm.ShowDialog() != DialogResult.OK)
+                return;
+            Int32 lifeTime;
+            try
+            {
+                lifeTime = dialogForm.LifeTime;
+            }
+            catch
+            {
+                MessageBox.Show("Время жизни должно быть целым числом");
+                return;
+            }
+            if(lifeTime<=0)
+            {
+                MessageBox.Show("Время жизни должно быть положительным числом");
+                return;
+            }
+            IsMessageSelfDestrusting = true;
+            this.LifeTime = lifeTime;
+            btnMakeMessageSelfDestructing.Text = "Сделать сообщение несамоудаляющимся";
+        }
+
+        private void ChatForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Client.DeleteUserIsReadingChat(User.Login, Chat);
         }
     }
 }

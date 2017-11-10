@@ -8,5 +8,6 @@ namespace Messenger.Model
         public Guid Id { get; set; }
         public string Name { get; set; }
         public IEnumerable<User> Members { get; set; }
+        public IEnumerable<User> UsersAreReadingChat { get; set; }
     }
 }

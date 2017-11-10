@@ -1,7 +1,9 @@
 ﻿using System;
-using Messenger.Model;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
+using System.Linq;
+using Messenger.Model;
 
 namespace Messenger.DataLayer.Sql
 {
@@ -58,6 +60,13 @@ namespace Messenger.DataLayer.Sql
                     using (var command = connection.CreateCommand())
                     {
                         command.Transaction = transaction;
+                        command.CommandText = "delete from UsersAreReadingChats where [user login] = @login";
+                        command.Parameters.AddWithValue("@login", login);
+                        command.ExecuteNonQuery();
+                    }
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
                         command.CommandText = "select id from Messages " +
                             "where [author login] = @login";
                         command.Parameters.AddWithValue("@login", login);
@@ -66,6 +75,13 @@ namespace Messenger.DataLayer.Sql
                             while (reader.Read())
                                 MessageRepository.Delete(reader.GetGuid(reader.GetOrdinal("id")));
                         }
+                    }
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.CommandText = "delete from UsersHaveReadMessages where [user login] = @login";
+                        command.Parameters.AddWithValue("@login", login);
+                        command.ExecuteNonQuery();
                     }
                     using (var command = connection.CreateCommand())
                     {
@@ -122,6 +138,31 @@ namespace Messenger.DataLayer.Sql
                     command.Parameters.AddWithValue("@login", login);
                     command.Parameters.AddWithValue("@avatar", avatar);
                     command.ExecuteNonQuery();
+                }
+            }
+        }
+        public IEnumerable<User> GetUsersHaveReadMessage(Guid message_id)
+        {
+            using (var connection = new SqlConnection(СonnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "select [user login] from UsersHaveReadMessages " +
+                        "where [message id]=@message_id";
+                    command.Parameters.AddWithValue("@message_id", message_id);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            yield return new User
+                            {
+                                Login = reader.GetString(reader.GetOrdinal("user login")),
+                                Password = Get(reader.GetString(reader.GetOrdinal("user login"))).Password,
+                                Avatar = Get(reader.GetString(reader.GetOrdinal("user login"))).Avatar
+                            };
+                        }
+                    }
                 }
             }
         }

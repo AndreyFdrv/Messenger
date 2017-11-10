@@ -48,6 +48,9 @@ namespace Messenger.DataLayer.Sql.Tests
             };
             TempChats.Add(message.Chat.Id);
             MessagesRepository.Create(message);
+            MessagesRepository.AddUserHasReadMessage("testUser", message.Id);
+            var usersHaveReadMessage = UsersRepository.GetUsersHaveReadMessage(message.Id);
+            Assert.AreEqual("testUser", usersHaveReadMessage.Single().Login);
             var result = ChatsRepository.GetChatMessages(message.Chat.Id).Single();
             Assert.AreEqual(message.Id, result.Id);
             Assert.AreEqual(message.Chat.Id, result.Chat.Id);

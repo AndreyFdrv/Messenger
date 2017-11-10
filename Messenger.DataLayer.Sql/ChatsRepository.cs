@@ -59,6 +59,7 @@ namespace Messenger.DataLayer.Sql
                     }
                     transaction.Commit();
                     chat.Members = members.Select(x => UsersRepository.Get(x));
+                    chat.UsersAreReadingChat = null;
                     return chat;
                 }
             }
@@ -113,6 +114,13 @@ namespace Messenger.DataLayer.Sql
                     using (var command = connection.CreateCommand())
                     {
                         command.Transaction = transaction;
+                        command.CommandText = "delete from UsersAreReadingChats where [chat id] = @chat_id";
+                        command.Parameters.AddWithValue("@chat_id", id);
+                        command.ExecuteNonQuery();
+                    }
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
                         command.CommandText = "delete from Chats where id = @chat_id";
                         command.Parameters.AddWithValue("@chat_id", id);
                         command.ExecuteNonQuery();
@@ -146,6 +154,31 @@ namespace Messenger.DataLayer.Sql
                 }
             }
         }
+        public IEnumerable<User> GetUsersAreReadingChat(Guid id)
+        {
+            try
+            {
+                Get(id);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Чат с id {id} не найден");
+            }
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "select [user login] from UsersAreReadingChats where [chat id] = @chat_id";
+                    command.Parameters.AddWithValue("@chat_id", id);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            yield return UsersRepository.Get(reader.GetString(reader.GetOrdinal("user login")));
+                    }
+                }
+            }
+        }
         public Chat Get(Guid id)
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -165,7 +198,8 @@ namespace Messenger.DataLayer.Sql
                             Id = reader.GetGuid(reader.GetOrdinal("id")),
                             Name = reader.IsDBNull(reader.GetOrdinal("name")) ?
                                 null : reader.GetString(reader.GetOrdinal("name")),
-                            Members=GetChatMembers(reader.GetGuid(reader.GetOrdinal("id")))
+                            Members=GetChatMembers(reader.GetGuid(reader.GetOrdinal("id"))),
+                            UsersAreReadingChat=GetUsersAreReadingChat(reader.GetGuid(reader.GetOrdinal("id")))
                         };
                     }
                 }
@@ -194,7 +228,8 @@ namespace Messenger.DataLayer.Sql
                                 Date = reader.GetDateTime(reader.GetOrdinal("date")),
                                 IsSelfDestructing = reader.GetBoolean(reader.GetOrdinal("is self-destructing")),
                                 LifeTime = reader.IsDBNull(reader.GetOrdinal("lifetime")) ?
-                                    10 : reader.GetInt32(reader.GetOrdinal("lifetime"))
+                                    10 : reader.GetInt32(reader.GetOrdinal("lifetime")),
+                                UsersHaveReadMessage = UsersRepository.GetUsersHaveReadMessage(reader.GetGuid(reader.GetOrdinal("id")))
                             };
                         }
                     }
@@ -234,6 +269,74 @@ namespace Messenger.DataLayer.Sql
                 {
                     command.CommandText = "insert into UsersInChats ([user login], [chat id]) " +
                         "values (@login, @id)";
+                    command.Parameters.AddWithValue("@login", login);
+                    command.Parameters.AddWithValue("@id", chatId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        public void AddUserIsReadingChat(string login, Guid chatId)
+        {
+            Chat chat;
+            try
+            {
+                chat = Get(chatId);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Чат с id {chatId} не найден");
+            }
+            User user;
+            try
+            {
+                user = UsersRepository.Get(login);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Пользователь с логином {login} не найден");
+            }
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                //следующая команда может добавить строку, совпадающую с существующей, в случае, если
+                //пользователь открыл один и тот же чат более одного раза
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "insert into UsersAreReadingChats ([user login], [chat id]) " +
+                        "values (@login, @id)";
+                    command.Parameters.AddWithValue("@login", login);
+                    command.Parameters.AddWithValue("@id", chatId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        public void DeleteUserIsReadingChat(string login, Guid chatId)
+        {
+            Chat chat;
+            try
+            {
+                chat = Get(chatId);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Чат с id {chatId} не найден");
+            }
+            User user;
+            try
+            {
+                user = UsersRepository.Get(login);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Пользователь с логином {login} не найден");
+            }
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "delete top(1) from UsersAreReadingChats " +
+                        "where [user login]=@login and [chat id]=@id";
                     command.Parameters.AddWithValue("@login", login);
                     command.Parameters.AddWithValue("@id", chatId);
                     command.ExecuteNonQuery();

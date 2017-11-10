@@ -1,4 +1,6 @@
-﻿using Messenger.Model;
+﻿using System;
+using System.Collections.Generic;
+using Messenger.Model;
 
 namespace Messenger.DataLayer
 {
@@ -8,5 +10,6 @@ namespace Messenger.DataLayer
         void Delete(string login);
         User Get(string login);
         void SetAvatar(string login, byte[] avatar);
+        IEnumerable<User> GetUsersHaveReadMessage(Guid message_id);
     }
 }

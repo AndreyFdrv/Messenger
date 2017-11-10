@@ -9,9 +9,12 @@ namespace Messenger.DataLayer
         Chat Create(IEnumerable<string> members, string name);
         IEnumerable<Chat> GetUserChats(string login);
         void Delete(Guid id);
+        IEnumerable<User> GetUsersAreReadingChat(Guid id);
         IEnumerable<User> GetChatMembers(Guid id);
         Chat Get(Guid id);
         IEnumerable<Message> GetChatMessages(Guid id);
         void AddUserToChat(Guid chatId, string login);
+        void AddUserIsReadingChat(string login, Guid chatId);
+        void DeleteUserIsReadingChat(string login, Guid chatId);
     }
 }

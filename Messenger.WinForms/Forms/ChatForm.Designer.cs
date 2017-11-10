@@ -37,6 +37,7 @@
             this.lstAttachedFiles = new System.Windows.Forms.ListBox();
             this.btnAttachFile = new System.Windows.Forms.Button();
             this.btnLoadChosenFiles = new System.Windows.Forms.Button();
+            this.btnMakeMessageSelfDestructing = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // AvatarAndLoginControl
@@ -49,7 +50,7 @@
             // lblMessages
             // 
             this.lblMessages.AutoSize = true;
-            this.lblMessages.Location = new System.Drawing.Point(9, 185);
+            this.lblMessages.Location = new System.Drawing.Point(9, 216);
             this.lblMessages.Name = "lblMessages";
             this.lblMessages.Size = new System.Drawing.Size(68, 13);
             this.lblMessages.TabIndex = 1;
@@ -58,24 +59,24 @@
             // flwMessages
             // 
             this.flwMessages.BackColor = System.Drawing.Color.White;
-            this.flwMessages.Location = new System.Drawing.Point(12, 202);
+            this.flwMessages.Location = new System.Drawing.Point(12, 233);
             this.flwMessages.Name = "flwMessages";
-            this.flwMessages.Size = new System.Drawing.Size(377, 201);
+            this.flwMessages.Size = new System.Drawing.Size(398, 201);
             this.flwMessages.TabIndex = 2;
             // 
             // txtMessage
             // 
             this.txtMessage.Location = new System.Drawing.Point(12, 55);
             this.txtMessage.Name = "txtMessage";
-            this.txtMessage.Size = new System.Drawing.Size(291, 47);
+            this.txtMessage.Size = new System.Drawing.Size(266, 80);
             this.txtMessage.TabIndex = 3;
             this.txtMessage.Text = "";
             // 
             // btnSend
             // 
-            this.btnSend.Location = new System.Drawing.Point(309, 79);
+            this.btnSend.Location = new System.Drawing.Point(284, 112);
             this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(83, 23);
+            this.btnSend.Size = new System.Drawing.Size(126, 23);
             this.btnSend.TabIndex = 4;
             this.btnSend.Text = "Отправить";
             this.btnSend.UseVisualStyleBackColor = true;
@@ -84,7 +85,7 @@
             // lblAttachedFiles
             // 
             this.lblAttachedFiles.AutoSize = true;
-            this.lblAttachedFiles.Location = new System.Drawing.Point(9, 110);
+            this.lblAttachedFiles.Location = new System.Drawing.Point(9, 141);
             this.lblAttachedFiles.Name = "lblAttachedFiles";
             this.lblAttachedFiles.Size = new System.Drawing.Size(129, 13);
             this.lblAttachedFiles.TabIndex = 5;
@@ -93,14 +94,14 @@
             // lstAttachedFiles
             // 
             this.lstAttachedFiles.FormattingEnabled = true;
-            this.lstAttachedFiles.Location = new System.Drawing.Point(12, 126);
+            this.lstAttachedFiles.Location = new System.Drawing.Point(12, 157);
             this.lstAttachedFiles.Name = "lstAttachedFiles";
-            this.lstAttachedFiles.Size = new System.Drawing.Size(288, 56);
+            this.lstAttachedFiles.Size = new System.Drawing.Size(309, 56);
             this.lstAttachedFiles.TabIndex = 6;
             // 
             // btnAttachFile
             // 
-            this.btnAttachFile.Location = new System.Drawing.Point(309, 146);
+            this.btnAttachFile.Location = new System.Drawing.Point(327, 177);
             this.btnAttachFile.Name = "btnAttachFile";
             this.btnAttachFile.Size = new System.Drawing.Size(83, 36);
             this.btnAttachFile.TabIndex = 7;
@@ -110,19 +111,30 @@
             // 
             // btnLoadChosenFiles
             // 
-            this.btnLoadChosenFiles.Location = new System.Drawing.Point(281, 12);
+            this.btnLoadChosenFiles.Location = new System.Drawing.Point(284, 12);
             this.btnLoadChosenFiles.Name = "btnLoadChosenFiles";
-            this.btnLoadChosenFiles.Size = new System.Drawing.Size(111, 37);
+            this.btnLoadChosenFiles.Size = new System.Drawing.Size(126, 37);
             this.btnLoadChosenFiles.TabIndex = 8;
             this.btnLoadChosenFiles.Text = "Загрузить выбранные файлы";
             this.btnLoadChosenFiles.UseVisualStyleBackColor = true;
             this.btnLoadChosenFiles.Click += new System.EventHandler(this.btnLoadChosenFiles_Click);
             // 
+            // btnMakeMessageSelfDestructing
+            // 
+            this.btnMakeMessageSelfDestructing.Location = new System.Drawing.Point(284, 69);
+            this.btnMakeMessageSelfDestructing.Name = "btnMakeMessageSelfDestructing";
+            this.btnMakeMessageSelfDestructing.Size = new System.Drawing.Size(126, 37);
+            this.btnMakeMessageSelfDestructing.TabIndex = 9;
+            this.btnMakeMessageSelfDestructing.Text = "Сделать сообщение самоудаляющимся";
+            this.btnMakeMessageSelfDestructing.UseVisualStyleBackColor = true;
+            this.btnMakeMessageSelfDestructing.Click += new System.EventHandler(this.btnMakeMessageSelfDestructing_Click);
+            // 
             // ChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(398, 415);
+            this.ClientSize = new System.Drawing.Size(417, 444);
+            this.Controls.Add(this.btnMakeMessageSelfDestructing);
             this.Controls.Add(this.btnLoadChosenFiles);
             this.Controls.Add(this.btnAttachFile);
             this.Controls.Add(this.lstAttachedFiles);
@@ -135,6 +147,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "ChatForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ChatForm_FormClosed);
             this.Load += new System.EventHandler(this.ChatForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -152,5 +165,6 @@
         private System.Windows.Forms.ListBox lstAttachedFiles;
         private System.Windows.Forms.Button btnAttachFile;
         private System.Windows.Forms.Button btnLoadChosenFiles;
+        private System.Windows.Forms.Button btnMakeMessageSelfDestructing;
     }
 }

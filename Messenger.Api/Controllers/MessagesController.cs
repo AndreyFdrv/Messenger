@@ -83,5 +83,26 @@ namespace Messenger.Api.Controllers
                 throw new HttpResponseException(resp);
             }
         }
+        [HttpPut]
+        [Route("api/chats/{id}/add user which has read message/{login}")]
+        public void AddUserHasReadMessage(string login, Guid id)
+        {
+            Logger.Trace("Пользователь {0} пытается прочитать сообщение " +
+                "c id {0}", login, id);
+            try
+            {
+                MessagesRepository.AddUserHasReadMessage(login, id);
+                Logger.Trace("Пользователь {0} прочёл сообщение с id {1}", login, id);
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error(ex.Message);
+                var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                throw new HttpResponseException(resp);
+            }
+        }
     }
 }
