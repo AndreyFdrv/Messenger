@@ -151,13 +151,14 @@ namespace Messenger.Api.Controllers
         }
         [HttpPut]
         [Route("api/chats/{id}/add user which is reading/{login}")]
-        public void AddUserisReadingChat(Guid id, string login)
+        public Chat AddUserisReadingChat(Guid id, string login)
         {
             Logger.Trace("Пользователь {0} пытается открыть чат с id {1}", login, id);
             try
             {
-                ChatsRepository.AddUserIsReadingChat(login, id);
+                var result = ChatsRepository.AddUserIsReadingChat(login, id);
                 Logger.Trace("Пользователь {0} открыл чат с id {1}", login, id);
+                return result;
             }
             catch (ArgumentException ex)
             {
@@ -171,13 +172,14 @@ namespace Messenger.Api.Controllers
         }
         [HttpPut]
         [Route("api/chats/{id}/delete user which is reading/{login}")]
-        public void DeleteUserisReadingChat(Guid id, string login)
+        public Chat DeleteUserisReadingChat(Guid id, string login)
         {
             Logger.Trace("Пользователь {0} пытается закрыть чат с id {1}", login, id);
             try
             {
-                ChatsRepository.DeleteUserIsReadingChat(login, id);
+                var result = ChatsRepository.DeleteUserIsReadingChat(login, id);
                 Logger.Trace("Пользователь {0} закрыл чат с id {1}", login, id);
+                return result;
             }
             catch (ArgumentException ex)
             {

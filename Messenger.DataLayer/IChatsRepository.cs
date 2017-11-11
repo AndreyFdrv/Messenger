@@ -14,7 +14,8 @@ namespace Messenger.DataLayer
         Chat Get(Guid id);
         IEnumerable<Message> GetChatMessages(Guid id);
         void AddUserToChat(Guid chatId, string login);
-        void AddUserIsReadingChat(string login, Guid chatId);
-        void DeleteUserIsReadingChat(string login, Guid chatId);
+        Chat AddUserIsReadingChat(string login, Guid chatId);
+        Chat DeleteUserIsReadingChat(string login, Guid chatId);
+        Message AddUserHasReadMessage(string login, Guid id);
     }
 }

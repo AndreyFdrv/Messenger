@@ -118,6 +118,23 @@ namespace Messenger.DataLayer.Sql
                         command.Parameters.AddWithValue("@chat_id", id);
                         command.ExecuteNonQuery();
                     }
+                    foreach(var message in GetChatMessages(id))
+                    {
+                        using (var command = connection.CreateCommand())
+                        {
+                            command.Transaction = transaction;
+                            command.CommandText = "delete from AttachedFiles where [message id] = @message_id";
+                            command.Parameters.AddWithValue("@message_id", message.Id);
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.CommandText = "delete from Messages where [chat id] = @chat_id";
+                        command.Parameters.AddWithValue("@chat_id", id);
+                        command.ExecuteNonQuery();
+                    }
                     using (var command = connection.CreateCommand())
                     {
                         command.Transaction = transaction;
@@ -275,7 +292,7 @@ namespace Messenger.DataLayer.Sql
                 }
             }
         }
-        public void AddUserIsReadingChat(string login, Guid chatId)
+        public Chat AddUserIsReadingChat(string login, Guid chatId)
         {
             Chat chat;
             try
@@ -309,8 +326,9 @@ namespace Messenger.DataLayer.Sql
                     command.ExecuteNonQuery();
                 }
             }
+            return Get(chatId);
         }
-        public void DeleteUserIsReadingChat(string login, Guid chatId)
+        public Chat DeleteUserIsReadingChat(string login, Guid chatId)
         {
             Chat chat;
             try
@@ -342,6 +360,85 @@ namespace Messenger.DataLayer.Sql
                     command.ExecuteNonQuery();
                 }
             }
+            return Get(chatId);
+        }
+        private Message GetMessage(Guid id)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "select top(1) * from Messages where id=@id";
+                    command.Parameters.AddWithValue("@id", id);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                            throw new ArgumentException($"Сообщение с ${id} не найдено");
+                        return new Message
+                        {
+                            Id = reader.GetGuid(reader.GetOrdinal("id")),
+                            Chat = Get(reader.GetGuid(reader.GetOrdinal("chat id"))),
+                            Author = UsersRepository.Get(reader.GetString(reader.GetOrdinal("author login"))),
+                            Text = reader.GetString(reader.GetOrdinal("text")),
+                            AttachedFiles = MessageRepository.GetMessageFiles(reader.GetGuid(reader.GetOrdinal("id"))),
+                            Date = reader.GetDateTime(reader.GetOrdinal("date")),
+                            IsSelfDestructing = reader.GetBoolean(reader.GetOrdinal("is self-destructing")),
+                            LifeTime = reader.IsDBNull(reader.GetOrdinal("lifetime")) ?
+                                10 : reader.GetInt32(reader.GetOrdinal("lifetime")),
+                            UsersHaveReadMessage = UsersRepository.GetUsersHaveReadMessage(reader.GetGuid(reader.GetOrdinal("id")))
+                        };
+                    }
+                }
+            }
+        }
+        private bool HasUserReadMessage(string login, Guid id)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "select top(1) [user login], [message id] " +
+                        "from UsersHaveReadMessages where [user login] = @login and [message id]=@id";
+                    command.Parameters.AddWithValue("@login", login);
+                    command.Parameters.AddWithValue("@id", id);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            return true;
+                        return false;
+                    }
+                }
+            }
+        }
+        public Message AddUserHasReadMessage(string login, Guid id)
+        {
+            try
+            {
+                UsersRepository.Get(login);
+            }
+            catch (ArgumentException ex)
+            {
+                throw ex;
+            }
+            if (!MessageRepository.IsMessageExist(id))
+                throw new ArgumentException($"Сообщение с id ${id} не найдено");
+            if (HasUserReadMessage(login, id))
+                return GetMessage(id);
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "insert into UsersHaveReadMessages ([user login], [message id])" +
+                        "values (@login, @id)";
+                    command.Parameters.AddWithValue("@login", login);
+                    command.Parameters.AddWithValue("@id", id);
+                    command.ExecuteNonQuery();
+                }
+            }
+            return GetMessage(id);
         }
     }
 }

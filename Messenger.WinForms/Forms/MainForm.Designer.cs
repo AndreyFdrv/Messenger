@@ -35,6 +35,7 @@
             this.btnCreateChat = new System.Windows.Forms.Button();
             this.btnAddUserToChat = new System.Windows.Forms.Button();
             this.btnChangeAvatar = new System.Windows.Forms.Button();
+            this.btnShowChatMembers = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblChats
@@ -93,7 +94,7 @@
             // 
             // btnChangeAvatar
             // 
-            this.btnChangeAvatar.Location = new System.Drawing.Point(249, 201);
+            this.btnChangeAvatar.Location = new System.Drawing.Point(249, 6);
             this.btnChangeAvatar.Name = "btnChangeAvatar";
             this.btnChangeAvatar.Size = new System.Drawing.Size(105, 31);
             this.btnChangeAvatar.TabIndex = 6;
@@ -101,11 +102,22 @@
             this.btnChangeAvatar.UseVisualStyleBackColor = true;
             this.btnChangeAvatar.Click += new System.EventHandler(this.btnChangeAvatar_Click);
             // 
+            // btnShowChatMembers
+            // 
+            this.btnShowChatMembers.Location = new System.Drawing.Point(249, 201);
+            this.btnShowChatMembers.Name = "btnShowChatMembers";
+            this.btnShowChatMembers.Size = new System.Drawing.Size(105, 61);
+            this.btnShowChatMembers.TabIndex = 7;
+            this.btnShowChatMembers.Text = "Посмотреть список участников выбранного чата";
+            this.btnShowChatMembers.UseVisualStyleBackColor = true;
+            this.btnShowChatMembers.Click += new System.EventHandler(this.btnShowChatMembers_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(359, 285);
+            this.Controls.Add(this.btnShowChatMembers);
             this.Controls.Add(this.btnChangeAvatar);
             this.Controls.Add(this.btnAddUserToChat);
             this.Controls.Add(this.btnCreateChat);
@@ -132,5 +144,6 @@
         private System.Windows.Forms.Button btnCreateChat;
         private System.Windows.Forms.Button btnAddUserToChat;
         private System.Windows.Forms.Button btnChangeAvatar;
+        private System.Windows.Forms.Button btnShowChatMembers;
     }
 }

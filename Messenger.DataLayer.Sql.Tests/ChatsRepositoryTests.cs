@@ -30,12 +30,53 @@ namespace Messenger.DataLayer.Sql.Tests
             UsersRepository.Create(user);
             var chat = ChatsRepository.Create(new [] { "testUser" }, "testChat");
             TempChats.Add(chat.Id);
-            ChatsRepository.AddUserIsReadingChat("testUser", chat.Id);
-            chat = ChatsRepository.Get(chat.Id);
+            chat = ChatsRepository.AddUserIsReadingChat("testUser", chat.Id);
             Assert.AreEqual(chat.UsersAreReadingChat.Single().Login, "testUser");
-            ChatsRepository.DeleteUserIsReadingChat("testUser", chat.Id);
-            chat = ChatsRepository.Get(chat.Id);
+            chat = ChatsRepository.DeleteUserIsReadingChat("testUser", chat.Id);
             Assert.AreEqual(chat.UsersAreReadingChat.Count(), 0);
+        }
+        [TestMethod]
+        public void ShouldAddUserHasReadMessage()
+        {
+            User author = new User
+            {
+                Login = "testUser",
+                Password = "password",
+                Avatar = Encoding.UTF8.GetBytes("testАvatar")
+            };
+            TempUsers.Add(author.Login);
+            UsersRepository.Create(author);
+            var message = new Message
+            {
+                Id = Guid.NewGuid(),
+                Chat = ChatsRepository.Create(new[] { "testUser" }, "testChat"),
+                Author = author,
+                Text = "testMessage",
+                AttachedFiles = new AttachedFile[]
+                {
+                    new AttachedFile
+                    {
+                        Name = "testName",
+                        Content = Encoding.UTF8.GetBytes("testFile")
+                    }
+                },
+                Date = DateTime.Now,
+                IsSelfDestructing = true,
+                LifeTime = 10
+            };
+            TempChats.Add(message.Chat.Id);
+            MessagesRepository.Create(message);
+            var result=ChatsRepository.AddUserHasReadMessage("testUser", message.Id);
+            Assert.AreEqual(message.Id, result.Id);
+            Assert.AreEqual(message.Chat.Id, result.Chat.Id);
+            Assert.AreEqual(message.Author.Login, result.Author.Login);
+            Assert.AreEqual(message.Text, result.Text);
+            Assert.AreEqual(message.AttachedFiles.Single().Name, result.AttachedFiles.Single().Name);
+            Assert.IsTrue(message.AttachedFiles.Single().Content.SequenceEqual(result.AttachedFiles.Single().Content));
+            Assert.AreEqual(message.IsSelfDestructing, result.IsSelfDestructing);
+            Assert.AreEqual(message.LifeTime, result.LifeTime);
+            var usersHaveReadMessage = UsersRepository.GetUsersHaveReadMessage(message.Id);
+            Assert.AreEqual("testUser", usersHaveReadMessage.Single().Login);
         }
         [TestCleanup]
         public void Clean()

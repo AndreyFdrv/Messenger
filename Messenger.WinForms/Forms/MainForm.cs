@@ -3,6 +3,7 @@ using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Linq;
 using Messenger.Model;
 
 namespace Messenger.WinForms.Forms
@@ -113,6 +114,15 @@ namespace Messenger.WinForms.Forms
                     MessageBox.Show("Не удалось открыть файл");
                 }
             }
+        }
+
+        private void btnShowChatMembers_Click(object sender, EventArgs e)
+        {
+            if (lstChats.SelectedIndex == -1)
+                return;
+            var chat = Chats[lstChats.SelectedIndex];
+            var form = new ChatMembersForm(chat.Name, chat.Members.ToList());
+            form.Show();
         }
     }
 }

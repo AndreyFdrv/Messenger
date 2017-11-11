@@ -47,7 +47,7 @@ namespace Messenger.DataLayer.Sql
                 }
             }
         }
-        private bool IsMessageExist(Guid id)
+        public bool IsMessageExist(Guid id)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -192,49 +192,6 @@ namespace Messenger.DataLayer.Sql
                         command.ExecuteNonQuery();
                     }
                     transaction.Commit();
-                }
-            }
-        }
-        private bool HasUserReadMessage(string login, Guid id)
-        {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "select top(1) [user login], [message id] " +
-                        "from UsersHaveReadMessages where [user login] = @login and [message id]=@id";
-                    command.Parameters.AddWithValue("@login", login);
-                    command.Parameters.AddWithValue("@id", id);
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                            return true;
-                        return false;
-                    }
-                }
-            }
-        }
-        public void AddUserHasReadMessage(string login, Guid id)
-        {
-            if (!IsUserExist(login))
-                throw new ArgumentException($"Пользователь с логином " +
-                    $"{login} не найден");
-            if (!IsMessageExist(id))
-                throw new ArgumentException($"Сообщение с id " +
-                    $"{id} не найдено");
-            if (HasUserReadMessage(login, id))
-                return;
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "insert into UsersHaveReadMessages ([user login], [message id])" +
-                        "values (@login, @id)";
-                    command.Parameters.AddWithValue("@login", login);
-                    command.Parameters.AddWithValue("@id", id);
-                    command.ExecuteNonQuery();
                 }
             }
         }

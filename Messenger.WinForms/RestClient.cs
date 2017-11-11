@@ -127,36 +127,30 @@ namespace Messenger.WinForms
             });
             Client.Execute(request);
         }
-        public void AddUserIsReadingChat(string login, Chat chat)
+        public void AddUserIsReadingChat(string login, ref Chat chat)
         {
             var request = new RestRequest("api/chats/{id}/add user which is reading/{login}", Method.PUT);
             request.AddUrlSegment("id", chat.Id.ToString());
             request.AddUrlSegment("login", login);
-            Client.Execute(request);
-            chat = GetChat(chat.Id);
+            var response = Client.Execute(request);
+            chat = JsonConvert.DeserializeObject<Chat>(response.Content);
         }
-        public void DeleteUserIsReadingChat(string login, Chat chat)
+        public void DeleteUserIsReadingChat(string login, ref Chat chat)
         {
             var request = new RestRequest("api/chats/{id}/delete user which is reading/{login}", Method.PUT);
             request.AddUrlSegment("id", chat.Id.ToString());
             request.AddUrlSegment("login", login);
-            Client.Execute(request);
-            chat = GetChat(chat.Id);
+            var response=Client.Execute(request);
+            chat = JsonConvert.DeserializeObject<Chat>(response.Content);
         }
-        private Message GetMessage(Guid id)
+        public void AddUserHasReadMessage(string login, ref Message message)
         {
-            var request = new RestRequest("api/message/{id}", Method.GET);
-            request.AddUrlSegment("id", id.ToString());
-            var response = Client.Execute(request);
-            return JsonConvert.DeserializeObject<Message>(response.Content);
-        }
-        public void AddUserHasReadMessage(string login, Message message)
-        {
-            var request=new RestRequest("api/chats/{id}/add user which has read message/{login}", Method.PUT);
+            var request=new RestRequest("api/messages/{id}/add user which has read message/{login}", Method.PUT);
             request.AddUrlSegment("id", message.Id.ToString());
             request.AddUrlSegment("login", login);
             Client.Execute(request);
-            message = GetMessage(message.Id);
+            var response = Client.Execute(request);
+            message = JsonConvert.DeserializeObject<Message>(response.Content);
         }
         public void DeleteMessage(Guid id)
         {

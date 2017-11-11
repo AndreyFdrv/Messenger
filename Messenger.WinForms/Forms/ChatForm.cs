@@ -40,14 +40,15 @@ namespace Messenger.WinForms.Forms
             timer.Tick += new EventHandler(TimerTick);
             timer.Enabled = true;
             AttachedFiles = new List<AttachedFile>();
-            Client.AddUserIsReadingChat(User.Login, Chat);
+            Client.AddUserIsReadingChat(User.Login, ref Chat);
             IsMessageSelfDestrusting = false;
             LifeTime = 0;
-            foreach (var message in Messages)
+            for (int i=0; i<Messages.Count; i++) 
             {
+                var message = Messages[i];
                 if (!message.IsSelfDestructing)
                     continue;
-                Client.AddUserHasReadMessage(User.Login, message);
+                Client.AddUserHasReadMessage(User.Login, ref message);
                 TryToDeleteMessage(message);
             }
         }
@@ -67,7 +68,16 @@ namespace Messenger.WinForms.Forms
 
         private void UpdateMessages()
         {
-            Messages = Client.GetChatMessages(Chat.Id).OrderByDescending(x => x.Date).ToList();
+            try
+            {
+                Messages = Client.GetChatMessages(Chat.Id).OrderByDescending(x => x.Date).ToList();
+            }
+            //Exception может возникнуть, если самоудаляющееся сообщение будет удалено во время
+            //обновления списка сообщений. В таком случае обновление будет произведено позднее.
+            catch (ArgumentException)
+            {
+                return;
+            }
             flwMessages.Controls.Clear();
             foreach (var message in Messages)
             {
@@ -98,13 +108,16 @@ namespace Messenger.WinForms.Forms
             if (IsMessageSelfDestrusting)
             {
                 foreach (var user in Chat.UsersAreReadingChat)
-                    Client.AddUserHasReadMessage(user.Login, message);
+                    Client.AddUserHasReadMessage(user.Login, ref message);
             }
-            TryToDeleteMessage(message);
             AttachedFiles.Clear();
             lstAttachedFiles.Items.Clear();
             txtMessage.Text = "";
+            IsMessageSelfDestrusting = false;
+            LifeTime = 0;
+            btnMakeMessageSelfDestructing.Text = "Сделать сообщение самоудаляющимся";
             UpdateMessages();
+            TryToDeleteMessage(message);
         }
 
         private void btnAttachFile_Click(object sender, EventArgs e)
@@ -159,17 +172,19 @@ namespace Messenger.WinForms.Forms
             }
         }
 
-        private async void DeleteMessage(Messenger.Model.Message message)
+        private void DeleteMessage(Messenger.Model.Message message)
         {
-            Thread.Sleep(message.LifeTime);
+            Thread.Sleep(message.LifeTime*1000);
             Client.DeleteMessage(message.Id);
         }
 
         private void TryToDeleteMessage(Messenger.Model.Message message)
         {
+            if (!message.IsSelfDestructing)
+                return;
             if(message.UsersHaveReadMessage.Count()==Chat.Members.Count())
             {
-                DeleteMessage(message);
+                new Thread(() => {DeleteMessage(message);}).Start();
             }
         }
 
@@ -207,7 +222,7 @@ namespace Messenger.WinForms.Forms
 
         private void ChatForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Client.DeleteUserIsReadingChat(User.Login, Chat);
+            Client.DeleteUserIsReadingChat(User.Login, ref Chat);
         }
     }
 }

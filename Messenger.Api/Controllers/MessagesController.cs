@@ -12,12 +12,15 @@ namespace Messenger.Api.Controllers
     public class MessagesController : ApiController
     {
         private readonly MessagesRepository MessagesRepository;
+        private readonly ChatsRepository ChatsRepository;
         private const string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=Messenger;" +
             "Integrated Security=True";
         private Logger Logger = LogManager.GetCurrentClassLogger();
         public MessagesController()
         {
             MessagesRepository = new MessagesRepository(ConnectionString);
+            ChatsRepository = new ChatsRepository(ConnectionString,
+                new UsersRepository(ConnectionString, MessagesRepository), MessagesRepository);
         }
         [HttpPost]
         [Route("api/messages")]
@@ -84,15 +87,16 @@ namespace Messenger.Api.Controllers
             }
         }
         [HttpPut]
-        [Route("api/chats/{id}/add user which has read message/{login}")]
-        public void AddUserHasReadMessage(string login, Guid id)
+        [Route("api/messages/{id}/add user which has read message/{login}")]
+        public Message AddUserHasReadMessage(string login, Guid id)
         {
             Logger.Trace("Пользователь {0} пытается прочитать сообщение " +
-                "c id {0}", login, id);
+                "c id {1}", login, id);
             try
             {
-                MessagesRepository.AddUserHasReadMessage(login, id);
+                var result = ChatsRepository.AddUserHasReadMessage(login, id);
                 Logger.Trace("Пользователь {0} прочёл сообщение с id {1}", login, id);
+                return result;
             }
             catch (ArgumentException ex)
             {

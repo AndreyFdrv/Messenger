@@ -6,9 +6,9 @@ namespace Messenger.DataLayer
 {
     public interface IMessagesRepository
     {
+        bool IsMessageExist(Guid id);
         void Create(Message message);
         void Delete(Guid id);
         IEnumerable<AttachedFile> GetMessageFiles(Guid id);
-        void AddUserHasReadMessage(string login, Guid id);
     }
 }
