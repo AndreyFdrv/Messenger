@@ -32,6 +32,7 @@
             this.txtText = new System.Windows.Forms.RichTextBox();
             this.lblAttachedFiles = new System.Windows.Forms.Label();
             this.lstAttachedFiles = new System.Windows.Forms.ListBox();
+            this.lblDate = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // AvatarAndLoginControl
@@ -69,16 +70,25 @@
             this.lstAttachedFiles.Size = new System.Drawing.Size(172, 43);
             this.lstAttachedFiles.TabIndex = 3;
             // 
+            // lblDate
+            // 
+            this.lblDate.AutoSize = true;
+            this.lblDate.Location = new System.Drawing.Point(39, 156);
+            this.lblDate.Name = "lblDate";
+            this.lblDate.Size = new System.Drawing.Size(0, 13);
+            this.lblDate.TabIndex = 4;
+            // 
             // MessageControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.lblDate);
             this.Controls.Add(this.lstAttachedFiles);
             this.Controls.Add(this.lblAttachedFiles);
             this.Controls.Add(this.txtText);
             this.Controls.Add(this.AvatarAndLoginControl);
             this.Name = "MessageControl";
-            this.Size = new System.Drawing.Size(224, 161);
+            this.Size = new System.Drawing.Size(225, 177);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -90,5 +100,6 @@
         private System.Windows.Forms.RichTextBox txtText;
         private System.Windows.Forms.Label lblAttachedFiles;
         private System.Windows.Forms.ListBox lstAttachedFiles;
+        private System.Windows.Forms.Label lblDate;
     }
 }

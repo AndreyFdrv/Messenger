@@ -81,8 +81,7 @@ namespace Messenger.WinForms.Forms
             flwMessages.Controls.Clear();
             foreach (var message in Messages)
             {
-                var messageControl = new MessageControl(message.Author.Avatar,
-                    message.Author.Login, message.Text, message.AttachedFiles.ToList());
+                var messageControl = new MessageControl(message);
                 flwMessages.Controls.Add(messageControl);
             }
         }
