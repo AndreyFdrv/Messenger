@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Messenger.WinForms.Forms
@@ -11,6 +12,7 @@ namespace Messenger.WinForms.Forms
         {
             InitializeComponent();
             Client = new RestClient(ConnectionString);
+
         }
 
         private void btnEnter_Click(object sender, EventArgs e)
@@ -23,7 +25,7 @@ namespace Messenger.WinForms.Forms
             else
             {
                 var mainForm = new MainForm(user, Client);
-                mainForm.Show();
+                mainForm.Show(this);
             }
         }
 
@@ -32,6 +34,14 @@ namespace Messenger.WinForms.Forms
             var login = usersControl.GetUser().Login;
             var password = usersControl.GetUser().Password;
             MessageBox.Show(Client.CreateUser(login, password));
+        }
+
+        //Данное событие закроет формы MainForm таким образом, чтобы были вызваны события
+        //FormClosing форм ChatForm
+        private void EnterForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            foreach (var form in OwnedForms)
+                form.Close();
         }
     }
 }

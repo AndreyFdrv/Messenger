@@ -440,5 +440,50 @@ namespace Messenger.DataLayer.Sql
             }
             return GetMessage(id);
         }
+        public int GetUnreadMessagesCount(Guid chatId, string login)
+        {
+            Chat chat;
+            try
+            {
+                chat = Get(chatId);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Чат с id {chatId} не найден");
+            }
+            User user;
+            try
+            {
+                user = UsersRepository.Get(login);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Пользователь с логином {login} не найден");
+            }
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                var messages = GetChatMessages(chatId);
+                int count = 0;
+                foreach(var message in messages)
+                {
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = "select top(1) * from UsersHaveReadMessages " +
+                            "where [user login]=@login and [message id]=@message_id";
+                        command.Parameters.AddWithValue("@login", login);
+                        command.Parameters.AddWithValue("@message_id", message.Id);
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (!reader.Read())
+                            {
+                                count++;
+                            }
+                        }
+                    }
+                }
+                return count;
+            }
+        }
     }
 }

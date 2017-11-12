@@ -54,7 +54,7 @@ namespace Messenger.WinForms
                 Password = password
             };
             request.AddBody(user);
-            var response=Client.Execute(request);
+            var response = Client.Execute(request);
             if (response.StatusCode == HttpStatusCode.NoContent)
                 return "Регистрация прошла успешно";
             return "Не удалось зарегестрировать пользователя";
@@ -85,9 +85,9 @@ namespace Messenger.WinForms
             var request = new RestRequest("api/chats", Method.POST);
             request.RequestFormat = DataFormat.Json;
             request.AddBody(
-            new{
-                creator=login,
-                name=name
+            new {
+                creator = login,
+                name = name
             });
             Client.Execute(request);
         }
@@ -100,9 +100,9 @@ namespace Messenger.WinForms
         }
         public string AddUserToChat(string login, Guid chatId)
         {
-            if(!IsUserExist(login))
+            if (!IsUserExist(login))
                 return "Пользователя с таким логином не существует";
-            foreach(var chatMember in GetChat(chatId).Members)
+            foreach (var chatMember in GetChat(chatId).Members)
             {
                 if (chatMember.Login == login)
                     return "Пользователь с таким логином уже есть в чате";
@@ -110,7 +110,7 @@ namespace Messenger.WinForms
             var request = new RestRequest("api/chats/{id}/add user/{login}", Method.PUT);
             request.AddUrlSegment("login", login);
             request.AddUrlSegment("id", chatId.ToString());
-            var response=Client.Execute(request);
+            var response = Client.Execute(request);
             if (response.StatusCode == HttpStatusCode.NoContent)
                 return "Пользователь добавлен в чат";
             return "Не удалось добавить пользователя в чат";
@@ -140,15 +140,14 @@ namespace Messenger.WinForms
             var request = new RestRequest("api/chats/{id}/delete user which is reading/{login}", Method.PUT);
             request.AddUrlSegment("id", chat.Id.ToString());
             request.AddUrlSegment("login", login);
-            var response=Client.Execute(request);
+            var response = Client.Execute(request);
             chat = JsonConvert.DeserializeObject<Chat>(response.Content);
         }
         public void AddUserHasReadMessage(string login, ref Message message)
         {
-            var request=new RestRequest("api/messages/{id}/add user which has read message/{login}", Method.PUT);
+            var request = new RestRequest("api/messages/{id}/add user which has read message/{login}", Method.PUT);
             request.AddUrlSegment("id", message.Id.ToString());
             request.AddUrlSegment("login", login);
-            Client.Execute(request);
             var response = Client.Execute(request);
             message = JsonConvert.DeserializeObject<Message>(response.Content);
         }
@@ -157,6 +156,14 @@ namespace Messenger.WinForms
             var request = new RestRequest("api/messages/{id}", Method.DELETE);
             request.AddUrlSegment("id", id.ToString());
             Client.Execute(request);
+        }
+        public int GetUnreadMessagesCount(string login, Guid chatId)
+        {
+            var request = new RestRequest("api/chats/{id}/unread messages count/{login}", Method.GET);
+            request.AddUrlSegment("id", chatId.ToString());
+            request.AddUrlSegment("login", login);
+            var response = Client.Execute(request);
+            return JsonConvert.DeserializeObject<int>(response.Content);
         }
     }
 }

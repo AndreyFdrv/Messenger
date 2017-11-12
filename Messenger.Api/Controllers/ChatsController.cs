@@ -191,5 +191,28 @@ namespace Messenger.Api.Controllers
                 throw new HttpResponseException(resp);
             }
         }
+        [HttpGet]
+        [Route("api/chats/{id}/unread messages count/{login}")]
+        public int GetUnreadMessagesCount(Guid id, string login)
+        {
+            Logger.Trace("Попытка получить количество непрочитанных сообщений в чате с id {0} " +
+                "для пользователя {1}", id, login);
+            try
+            {
+                var result = ChatsRepository.GetUnreadMessagesCount(id, login);
+                Logger.Trace("Количество непрочитанных сообщений в чате с id {0} " +
+                    "для пользователя {1} получено", id, login);
+                return result;
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error(ex.Message);
+                var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                throw new HttpResponseException(resp);
+            }
+        }
     }
 }

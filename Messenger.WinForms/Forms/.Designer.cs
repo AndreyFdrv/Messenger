@@ -28,17 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.usersControl = new Messenger.WinForms.Controls.UsersControl();
             this.btnEnter = new System.Windows.Forms.Button();
             this.btnRegister = new System.Windows.Forms.Button();
+            this.usersControl = new Messenger.WinForms.Controls.UsersControl();
             this.SuspendLayout();
-            // 
-            // usersControl
-            // 
-            this.usersControl.Location = new System.Drawing.Point(12, 12);
-            this.usersControl.Name = "usersControl";
-            this.usersControl.Size = new System.Drawing.Size(163, 62);
-            this.usersControl.TabIndex = 0;
             // 
             // btnEnter
             // 
@@ -60,6 +53,13 @@
             this.btnRegister.UseVisualStyleBackColor = true;
             this.btnRegister.Click += new System.EventHandler(this.btnRegister_Click);
             // 
+            // usersControl
+            // 
+            this.usersControl.Location = new System.Drawing.Point(12, 12);
+            this.usersControl.Name = "usersControl";
+            this.usersControl.Size = new System.Drawing.Size(163, 62);
+            this.usersControl.TabIndex = 0;
+            // 
             // EnterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -72,6 +72,7 @@
             this.MaximizeBox = false;
             this.Name = "EnterForm";
             this.Text = "Войдите или зарегестрируйтесь";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EnterForm_FormClosing);
             this.ResumeLayout(false);
 
         }

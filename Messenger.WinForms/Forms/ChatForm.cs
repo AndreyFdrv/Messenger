@@ -36,7 +36,7 @@ namespace Messenger.WinForms.Forms
             flwMessages.WrapContents = false;
             UpdateMessages();
             var timer = new System.Windows.Forms.Timer();
-            timer.Interval = 1000;
+            timer.Interval = 2000;
             timer.Tick += new EventHandler(TimerTick);
             timer.Enabled = true;
             AttachedFiles = new List<AttachedFile>();
@@ -46,8 +46,6 @@ namespace Messenger.WinForms.Forms
             for (int i=0; i<Messages.Count; i++) 
             {
                 var message = Messages[i];
-                if (!message.IsSelfDestructing)
-                    continue;
                 Client.AddUserHasReadMessage(User.Login, ref message);
                 TryToDeleteMessage(message);
             }
@@ -104,11 +102,8 @@ namespace Messenger.WinForms.Forms
             };
             Client.CreateMessage(message);
             Chat = Client.GetChat(Chat.Id);
-            if (IsMessageSelfDestrusting)
-            {
-                foreach (var user in Chat.UsersAreReadingChat)
-                    Client.AddUserHasReadMessage(user.Login, ref message);
-            }
+            foreach (var user in Chat.UsersAreReadingChat)
+                Client.AddUserHasReadMessage(user.Login, ref message);
             AttachedFiles.Clear();
             lstAttachedFiles.Items.Clear();
             txtMessage.Text = "";
@@ -219,7 +214,7 @@ namespace Messenger.WinForms.Forms
             btnMakeMessageSelfDestructing.Text = "Сделать сообщение несамоудаляющимся";
         }
 
-        private void ChatForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void ChatForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Client.DeleteUserIsReadingChat(User.Login, ref Chat);
         }

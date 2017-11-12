@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.lblChats = new System.Windows.Forms.Label();
-            this.lstChats = new System.Windows.Forms.ListBox();
             this.AvatarAndLoginControl = new Messenger.WinForms.Controls.AvatarAndLoginControl();
             this.btnGoToChoosenChat = new System.Windows.Forms.Button();
             this.btnCreateChat = new System.Windows.Forms.Button();
             this.btnAddUserToChat = new System.Windows.Forms.Button();
             this.btnChangeAvatar = new System.Windows.Forms.Button();
             this.btnShowChatMembers = new System.Windows.Forms.Button();
+            this.flwChats = new System.Windows.Forms.FlowLayoutPanel();
             this.SuspendLayout();
             // 
             // lblChats
@@ -46,14 +46,6 @@
             this.lblChats.Size = new System.Drawing.Size(37, 13);
             this.lblChats.TabIndex = 0;
             this.lblChats.Text = "Чаты:";
-            // 
-            // lstChats
-            // 
-            this.lstChats.FormattingEnabled = true;
-            this.lstChats.Location = new System.Drawing.Point(12, 62);
-            this.lstChats.Name = "lstChats";
-            this.lstChats.Size = new System.Drawing.Size(231, 212);
-            this.lstChats.TabIndex = 1;
             // 
             // AvatarAndLoginControl
             // 
@@ -112,23 +104,32 @@
             this.btnShowChatMembers.UseVisualStyleBackColor = true;
             this.btnShowChatMembers.Click += new System.EventHandler(this.btnShowChatMembers_Click);
             // 
+            // flwChats
+            // 
+            this.flwChats.BackColor = System.Drawing.Color.White;
+            this.flwChats.Location = new System.Drawing.Point(12, 63);
+            this.flwChats.Name = "flwChats";
+            this.flwChats.Size = new System.Drawing.Size(231, 210);
+            this.flwChats.TabIndex = 8;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(359, 285);
+            this.Controls.Add(this.flwChats);
             this.Controls.Add(this.btnShowChatMembers);
             this.Controls.Add(this.btnChangeAvatar);
             this.Controls.Add(this.btnAddUserToChat);
             this.Controls.Add(this.btnCreateChat);
             this.Controls.Add(this.btnGoToChoosenChat);
             this.Controls.Add(this.AvatarAndLoginControl);
-            this.Controls.Add(this.lstChats);
             this.Controls.Add(this.lblChats);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Messenger";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -138,12 +139,12 @@
         #endregion
 
         private System.Windows.Forms.Label lblChats;
-        private System.Windows.Forms.ListBox lstChats;
         private Controls.AvatarAndLoginControl AvatarAndLoginControl;
         private System.Windows.Forms.Button btnGoToChoosenChat;
         private System.Windows.Forms.Button btnCreateChat;
         private System.Windows.Forms.Button btnAddUserToChat;
         private System.Windows.Forms.Button btnChangeAvatar;
         private System.Windows.Forms.Button btnShowChatMembers;
+        private System.Windows.Forms.FlowLayoutPanel flwChats;
     }
 }

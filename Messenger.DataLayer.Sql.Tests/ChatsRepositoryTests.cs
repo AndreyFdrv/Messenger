@@ -66,7 +66,11 @@ namespace Messenger.DataLayer.Sql.Tests
             };
             TempChats.Add(message.Chat.Id);
             MessagesRepository.Create(message);
-            var result=ChatsRepository.AddUserHasReadMessage("testUser", message.Id);
+            var unreadMessagesCount = ChatsRepository.GetUnreadMessagesCount(message.Chat.Id, message.Author.Login);
+            Assert.AreEqual(unreadMessagesCount, 1);
+            var result = ChatsRepository.AddUserHasReadMessage("testUser", message.Id);
+            unreadMessagesCount = ChatsRepository.GetUnreadMessagesCount(message.Chat.Id, message.Author.Login);
+            Assert.AreEqual(unreadMessagesCount, 0);
             Assert.AreEqual(message.Id, result.Id);
             Assert.AreEqual(message.Chat.Id, result.Chat.Id);
             Assert.AreEqual(message.Author.Login, result.Author.Login);
