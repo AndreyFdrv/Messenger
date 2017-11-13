@@ -16,8 +16,29 @@ namespace Messenger.DataLayer.Sql
             this.СonnectionString = connectionString;
             this.MessageRepository = messageRepository;
         }
+        private bool IsUserExist(string login)
+        {
+            using (var connection = new SqlConnection(СonnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "select top(1) login " +
+                        "from Users where login = @login";
+                    command.Parameters.AddWithValue("@login", login);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            return true;
+                        return false;
+                    }
+                }
+            }
+        }
         public void Create(User user)
         {
+            if (IsUserExist(user.Login))
+                throw new ArgumentException($"Пользователь {user.Login} уже существует. Выберете другой логин.");
             using (var connection = new SqlConnection(СonnectionString))
             {
                 connection.Open();

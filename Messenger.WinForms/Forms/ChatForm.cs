@@ -53,7 +53,17 @@ namespace Messenger.WinForms.Forms
 
         private void TimerTick(object sender, EventArgs e)
         {
-            var messages = Client.GetChatMessages(Chat.Id).OrderByDescending(x => x.Date).ToList();
+            List<Messenger.Model.Message> messages = null;
+            try
+            {
+                messages = Client.GetChatMessages(Chat.Id).OrderByDescending(x => x.Date).ToList();
+            }
+            //Exception может возникнуть, если самоудаляющееся сообщение будет удалено во время
+            //обновления списка сообщений. В таком случае обновление будет произведено позднее.
+            catch (Exception)
+            {
+                return;
+            }
             if (messages.Count != Messages.Count)
                 UpdateMessages();
             else
@@ -72,7 +82,7 @@ namespace Messenger.WinForms.Forms
             }
             //Exception может возникнуть, если самоудаляющееся сообщение будет удалено во время
             //обновления списка сообщений. В таком случае обновление будет произведено позднее.
-            catch (ArgumentException)
+            catch (Exception)
             {
                 return;
             }

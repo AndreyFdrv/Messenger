@@ -71,8 +71,8 @@ namespace Messenger.WinForms.Forms
         private void SortChats(ref List<Chat> chats)
         {
             var unreadMessagesCounts = new List<int>();
-            foreach (ChatControl chatControl in flwChats.Controls)
-                unreadMessagesCounts.Add(chatControl.GetUnreadMessagesCount());
+            foreach (var chat in chats)
+                unreadMessagesCounts.Add(Client.GetUnreadMessagesCount(User.Login, chat.Id));
             var unreadMessagesCountsArray = unreadMessagesCounts.ToArray();
             var chatsArray = chats.ToArray();
             Array.Sort(unreadMessagesCountsArray, chatsArray);
@@ -160,13 +160,13 @@ namespace Messenger.WinForms.Forms
 
         private void btnAddUserToChat_Click(object sender, System.EventArgs e)
         {
+            var index = SelectedChatIndex();
+            if (index == -1)
+                return;
             var dialogForm = new AddUserToChatForm();
             dialogForm.ShowDialog();
             if (dialogForm.DialogResult == DialogResult.OK)
             {
-                var index = SelectedChatIndex();
-                if (index == -1)
-                    return;
                 var chat = Chats[index];
                 var message = Client.AddUserToChat(dialogForm.Login, chat.Id);
                 var record = new ChatsHistoryRecord
@@ -215,6 +215,7 @@ namespace Messenger.WinForms.Forms
             var index = SelectedChatIndex();
             if (index == -1)
                 return;
+            UpdateChats();
             var chat = Chats[index];
             var form = new ChatMembersForm(chat.Name, chat.Members.ToList());
             form.Show();

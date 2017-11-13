@@ -55,8 +55,20 @@ namespace Messenger.Api.Controllers
         public void Create([FromBody] User user)
         {
             Logger.Trace("Попытка создать пользователя с логином {0}", user.Login);
-            UsersRepository.Create(user);
-            Logger.Trace("Пользователь с логином {0} создан", user.Login);
+            try
+            {
+                UsersRepository.Create(user);
+                Logger.Trace("Пользователь с логином {0} создан", user.Login);
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error(ex.Message);
+                var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                throw new HttpResponseException(resp);
+            }
         }
         [HttpDelete]
         [Route("api/users/{login}")]
