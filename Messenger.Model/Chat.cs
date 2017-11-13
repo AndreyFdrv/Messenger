@@ -9,5 +9,6 @@ namespace Messenger.Model
         public string Name { get; set; }
         public IEnumerable<User> Members { get; set; }
         public IEnumerable<User> UsersAreReadingChat { get; set; }
+        public IEnumerable<ChatsHistoryRecord> ChatHistory { get; set; }
     }
 }

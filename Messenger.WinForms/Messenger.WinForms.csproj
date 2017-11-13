@@ -76,6 +76,12 @@
     <Compile Include="Controls\ChatControl.Designer.cs">
       <DependentUpon>ChatControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ChatsHistoryRecordControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ChatsHistoryRecordControl.Designer.cs">
+      <DependentUpon>ChatsHistoryRecordControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MessageControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -99,6 +105,12 @@
     </Compile>
     <Compile Include="Forms\AddUserToChatForm.Designer.cs">
       <DependentUpon>AddUserToChatForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ChatHistoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ChatHistoryForm.Designer.cs">
+      <DependentUpon>ChatHistoryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ChatMembersForm.cs">
       <SubType>Form</SubType>
@@ -140,6 +152,9 @@
     <EmbeddedResource Include="Controls\ChatControl.resx">
       <DependentUpon>ChatControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ChatsHistoryRecordControl.resx">
+      <DependentUpon>ChatsHistoryRecordControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\MessageControl.resx">
       <DependentUpon>MessageControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -151,6 +166,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddUserToChatForm.resx">
       <DependentUpon>AddUserToChatForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ChatHistoryForm.resx">
+      <DependentUpon>ChatHistoryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ChatMembersForm.resx">
       <DependentUpon>ChatMembersForm.cs</DependentUpon>

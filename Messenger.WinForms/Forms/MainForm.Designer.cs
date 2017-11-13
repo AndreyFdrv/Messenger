@@ -36,6 +36,7 @@
             this.btnChangeAvatar = new System.Windows.Forms.Button();
             this.btnShowChatMembers = new System.Windows.Forms.Button();
             this.flwChats = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnShowChatHistory = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblChats
@@ -58,7 +59,7 @@
             // 
             this.btnGoToChoosenChat.Location = new System.Drawing.Point(249, 62);
             this.btnGoToChoosenChat.Name = "btnGoToChoosenChat";
-            this.btnGoToChoosenChat.Size = new System.Drawing.Size(105, 39);
+            this.btnGoToChoosenChat.Size = new System.Drawing.Size(131, 39);
             this.btnGoToChoosenChat.TabIndex = 3;
             this.btnGoToChoosenChat.Text = "Перейти к выбранному чату";
             this.btnGoToChoosenChat.UseVisualStyleBackColor = true;
@@ -68,7 +69,7 @@
             // 
             this.btnCreateChat.Location = new System.Drawing.Point(249, 107);
             this.btnCreateChat.Name = "btnCreateChat";
-            this.btnCreateChat.Size = new System.Drawing.Size(105, 28);
+            this.btnCreateChat.Size = new System.Drawing.Size(131, 28);
             this.btnCreateChat.TabIndex = 4;
             this.btnCreateChat.Text = "Создать чат";
             this.btnCreateChat.UseVisualStyleBackColor = true;
@@ -78,7 +79,7 @@
             // 
             this.btnAddUserToChat.Location = new System.Drawing.Point(249, 141);
             this.btnAddUserToChat.Name = "btnAddUserToChat";
-            this.btnAddUserToChat.Size = new System.Drawing.Size(105, 54);
+            this.btnAddUserToChat.Size = new System.Drawing.Size(131, 54);
             this.btnAddUserToChat.TabIndex = 5;
             this.btnAddUserToChat.Text = "Добавить пользователя в выбранный чат";
             this.btnAddUserToChat.UseVisualStyleBackColor = true;
@@ -88,7 +89,7 @@
             // 
             this.btnChangeAvatar.Location = new System.Drawing.Point(249, 6);
             this.btnChangeAvatar.Name = "btnChangeAvatar";
-            this.btnChangeAvatar.Size = new System.Drawing.Size(105, 31);
+            this.btnChangeAvatar.Size = new System.Drawing.Size(131, 31);
             this.btnChangeAvatar.TabIndex = 6;
             this.btnChangeAvatar.Text = "Сменить аватар";
             this.btnChangeAvatar.UseVisualStyleBackColor = true;
@@ -98,7 +99,7 @@
             // 
             this.btnShowChatMembers.Location = new System.Drawing.Point(249, 201);
             this.btnShowChatMembers.Name = "btnShowChatMembers";
-            this.btnShowChatMembers.Size = new System.Drawing.Size(105, 61);
+            this.btnShowChatMembers.Size = new System.Drawing.Size(131, 61);
             this.btnShowChatMembers.TabIndex = 7;
             this.btnShowChatMembers.Text = "Посмотреть список участников выбранного чата";
             this.btnShowChatMembers.UseVisualStyleBackColor = true;
@@ -109,14 +110,25 @@
             this.flwChats.BackColor = System.Drawing.Color.White;
             this.flwChats.Location = new System.Drawing.Point(12, 63);
             this.flwChats.Name = "flwChats";
-            this.flwChats.Size = new System.Drawing.Size(231, 210);
+            this.flwChats.Size = new System.Drawing.Size(231, 250);
             this.flwChats.TabIndex = 8;
+            // 
+            // btnShowChatHistory
+            // 
+            this.btnShowChatHistory.Location = new System.Drawing.Point(249, 268);
+            this.btnShowChatHistory.Name = "btnShowChatHistory";
+            this.btnShowChatHistory.Size = new System.Drawing.Size(131, 45);
+            this.btnShowChatHistory.TabIndex = 9;
+            this.btnShowChatHistory.Text = "Посмотреть историю выбранного чата";
+            this.btnShowChatHistory.UseVisualStyleBackColor = true;
+            this.btnShowChatHistory.Click += new System.EventHandler(this.btnShowChatHistory_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(359, 285);
+            this.ClientSize = new System.Drawing.Size(392, 325);
+            this.Controls.Add(this.btnShowChatHistory);
             this.Controls.Add(this.flwChats);
             this.Controls.Add(this.btnShowChatMembers);
             this.Controls.Add(this.btnChangeAvatar);
@@ -146,5 +158,6 @@
         private System.Windows.Forms.Button btnChangeAvatar;
         private System.Windows.Forms.Button btnShowChatMembers;
         private System.Windows.Forms.FlowLayoutPanel flwChats;
+        private System.Windows.Forms.Button btnShowChatHistory;
     }
 }

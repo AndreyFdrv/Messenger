@@ -80,7 +80,7 @@ namespace Messenger.WinForms
             request.AddBody(message);
             Client.Execute(request);
         }
-        public void CreateChat(string login, string name)
+        public Chat CreateChat(string login, string name)
         {
             var request = new RestRequest("api/chats", Method.POST);
             request.RequestFormat = DataFormat.Json;
@@ -89,7 +89,8 @@ namespace Messenger.WinForms
                 creator = login,
                 name = name
             });
-            Client.Execute(request);
+            var response = Client.Execute(request);
+            return JsonConvert.DeserializeObject<Chat>(response.Content);
         }
         public Chat GetChat(Guid id)
         {
@@ -164,6 +165,20 @@ namespace Messenger.WinForms
             request.AddUrlSegment("login", login);
             var response = Client.Execute(request);
             return JsonConvert.DeserializeObject<int>(response.Content);
+        }
+        public void AddChatHistoryRecord(ChatsHistoryRecord record)
+        {
+            var request = new RestRequest("api/chats/add chat history record", Method.PUT);
+            request.RequestFormat = DataFormat.Json;
+            request.AddBody(record);
+            Client.Execute(request);
+        }
+        public List<ChatsHistoryRecord> GetChatHistory(Guid id)
+        {
+            var request = new RestRequest("api/chats/{id}/get chat history", Method.GET);
+            request.AddUrlSegment("id", id.ToString());
+            var response = Client.Execute(request);
+            return JsonConvert.DeserializeObject<List<ChatsHistoryRecord>>(response.Content);
         }
     }
 }

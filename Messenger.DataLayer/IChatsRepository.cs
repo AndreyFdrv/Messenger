@@ -18,5 +18,7 @@ namespace Messenger.DataLayer
         Chat DeleteUserIsReadingChat(string login, Guid chatId);
         Message AddUserHasReadMessage(string login, Guid id);
         int GetUnreadMessagesCount(Guid chatId, string login);
+        IEnumerable<ChatsHistoryRecord> GetChatHistory(Guid id);
+        void AddChatHistoryRecord(ChatsHistoryRecord record);
     }
 }

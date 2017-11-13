@@ -52,6 +52,16 @@ namespace Messenger.DataLayer.Sql.Tests
             TempUsers.Add(user.Login);
             var chat = ChatsRepository.Create(new[] { user.Login }, chatName);
             TempChats.Add(chat.Id);
+            var chatHistoryRecord = new ChatsHistoryRecord
+            {
+                Text = "Пользователь testUser создал чат testChat",
+                ChatId = chat.Id,
+                Date = DateTime.Now
+            };
+            ChatsRepository.AddChatHistoryRecord(chatHistoryRecord);
+            var chatHistory = ChatsRepository.GetChatHistory(chat.Id);
+            Assert.AreEqual(chatHistoryRecord.Text, chatHistory.Single().Text);
+            Assert.AreEqual(chatHistoryRecord.ChatId, chatHistory.Single().ChatId);
             var result = ChatsRepository.Get(chat.Id);
             var userChats = ChatsRepository.GetUserChats(user.Login);
             Assert.AreEqual(chatName, chat.Name);

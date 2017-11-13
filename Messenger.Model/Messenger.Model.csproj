@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="AttachedFile.cs" />
     <Compile Include="Chat.cs" />
+    <Compile Include="ChatsHistoryRecord.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>

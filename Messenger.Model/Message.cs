@@ -14,6 +14,6 @@ namespace Messenger.Model
         public DateTime Date { get; set; }
         public bool IsSelfDestructing { get; set; }
         public Int32 LifeTime { get; set; }//время жизни сообщения в секундах(для самоудаляющихся сообщений)
-        public IEnumerable<User> UsersHaveReadMessage;//поле для самоудаляющихся сообщений
+        public IEnumerable<User> UsersHaveReadMessage;
     }
 }

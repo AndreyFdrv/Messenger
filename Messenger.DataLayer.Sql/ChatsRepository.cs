@@ -60,6 +60,7 @@ namespace Messenger.DataLayer.Sql
                     transaction.Commit();
                     chat.Members = members.Select(x => UsersRepository.Get(x));
                     chat.UsersAreReadingChat = null;
+                    chat.ChatHistory = null;
                     return chat;
                 }
             }
@@ -82,7 +83,9 @@ namespace Messenger.DataLayer.Sql
                             {
                                 Id = reader.GetGuid(reader.GetOrdinal("id")),
                                 Name = reader.GetString(reader.GetOrdinal("name")),
-                                Members = GetChatMembers(reader.GetGuid(reader.GetOrdinal("id")))
+                                Members = GetChatMembers(reader.GetGuid(reader.GetOrdinal("id"))),
+                                UsersAreReadingChat = GetUsersAreReadingChat(reader.GetGuid(reader.GetOrdinal("id"))),
+                                ChatHistory = GetChatHistory(reader.GetGuid(reader.GetOrdinal("id")))
                             };
                         }
                     }
@@ -118,12 +121,26 @@ namespace Messenger.DataLayer.Sql
                         command.Parameters.AddWithValue("@chat_id", id);
                         command.ExecuteNonQuery();
                     }
-                    foreach(var message in GetChatMessages(id))
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.CommandText = "delete from ChatsHistory where [chat id] = @chat_id";
+                        command.Parameters.AddWithValue("@chat_id", id);
+                        command.ExecuteNonQuery();
+                    }
+                    foreach (var message in GetChatMessages(id))
                     {
                         using (var command = connection.CreateCommand())
                         {
                             command.Transaction = transaction;
                             command.CommandText = "delete from AttachedFiles where [message id] = @message_id";
+                            command.Parameters.AddWithValue("@message_id", message.Id);
+                            command.ExecuteNonQuery();
+                        }
+                        using (var command = connection.CreateCommand())
+                        {
+                            command.Transaction = transaction;
+                            command.CommandText = "delete from UsersHaveReadMessages where [message id] = @message_id";
                             command.Parameters.AddWithValue("@message_id", message.Id);
                             command.ExecuteNonQuery();
                         }
@@ -216,7 +233,8 @@ namespace Messenger.DataLayer.Sql
                             Name = reader.IsDBNull(reader.GetOrdinal("name")) ?
                                 null : reader.GetString(reader.GetOrdinal("name")),
                             Members=GetChatMembers(reader.GetGuid(reader.GetOrdinal("id"))),
-                            UsersAreReadingChat=GetUsersAreReadingChat(reader.GetGuid(reader.GetOrdinal("id")))
+                            UsersAreReadingChat=GetUsersAreReadingChat(reader.GetGuid(reader.GetOrdinal("id"))),
+                            ChatHistory = GetChatHistory(reader.GetGuid(reader.GetOrdinal("id")))
                         };
                     }
                 }
@@ -483,6 +501,63 @@ namespace Messenger.DataLayer.Sql
                     }
                 }
                 return count;
+            }
+        }
+        public IEnumerable<ChatsHistoryRecord> GetChatHistory(Guid id)
+        {
+            Chat chat;
+            try
+            {
+                chat = Get(id);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Чат с id {id} не найден");
+            }
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "select * from ChatsHistory where [chat id]=@chat_id";
+                    command.Parameters.AddWithValue("@chat_id", id);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            yield return new ChatsHistoryRecord
+                            {
+                                Text = reader.GetString(reader.GetOrdinal("text")),
+                                Date = reader.GetDateTime(reader.GetOrdinal("date")),
+                                ChatId = reader.GetGuid(reader.GetOrdinal("chat id"))
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        public void AddChatHistoryRecord(ChatsHistoryRecord record)
+        {
+            try
+            {
+                Get(record.ChatId);
+            }
+            catch(ArgumentException ex)
+            {
+                throw ex;
+            }
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "insert into ChatsHistory (text, date, [chat id])" +
+                        "values (@text, @date, @chat_id)";
+                    command.Parameters.AddWithValue("@text", record.Text);
+                    command.Parameters.AddWithValue("@date", record.Date);
+                    command.Parameters.AddWithValue("@chat_id", record.ChatId);
+                    command.ExecuteNonQuery();
+                }
             }
         }
     }

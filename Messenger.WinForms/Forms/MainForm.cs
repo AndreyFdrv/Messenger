@@ -146,7 +146,14 @@ namespace Messenger.WinForms.Forms
             dialogForm.ShowDialog();
             if(dialogForm.DialogResult==DialogResult.OK)
             {
-                Client.CreateChat(User.Login, dialogForm.ChatName);
+                var chat = Client.CreateChat(User.Login, dialogForm.ChatName);
+                var record = new ChatsHistoryRecord
+                {
+                    Text = $"Пользователь {User.Login} создал чат {dialogForm.ChatName}",
+                    Date = DateTime.Now,
+                    ChatId = chat.Id
+                };
+                Client.AddChatHistoryRecord(record);
                 UpdateChats();
             }
         }
@@ -162,6 +169,13 @@ namespace Messenger.WinForms.Forms
                     return;
                 var chat = Chats[index];
                 var message = Client.AddUserToChat(dialogForm.Login, chat.Id);
+                var record = new ChatsHistoryRecord
+                {
+                    Text = $"Пользователь {User.Login} добавил пользователя {dialogForm.Login} в чат {chat.Name}",
+                    Date = DateTime.Now,
+                    ChatId = chat.Id
+                };
+                Client.AddChatHistoryRecord(record);
                 MessageBox.Show(message);
             }
         }
@@ -209,6 +223,17 @@ namespace Messenger.WinForms.Forms
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Timer.Stop();
+        }
+
+        private void btnShowChatHistory_Click(object sender, EventArgs e)
+        {
+            var index = SelectedChatIndex();
+            if (index == -1)
+                return;
+            var chat = Chats[index];
+            var chatHistory = Client.GetChatHistory(chat.Id).OrderByDescending(x => x.Date).ToList();
+            var form = new ChatHistoryForm(chat.Name, chatHistory);
+            form.Show();
         }
     }
 }

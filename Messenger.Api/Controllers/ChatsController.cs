@@ -214,5 +214,46 @@ namespace Messenger.Api.Controllers
                 throw new HttpResponseException(resp);
             }
         }
+        [HttpPut]
+        [Route("api/chats/add chat history record")]
+        public void AddChatHistoryRecord([FromBody] ChatsHistoryRecord record)
+        {
+            Logger.Trace("Попытка добавить запись истории чатов для чата с id {0}", record.ChatId);
+            try
+            {
+                ChatsRepository.AddChatHistoryRecord(record);
+                Logger.Trace("Запись истории чатов для чата с id {0} добавлена", record.ChatId);
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error(ex.Message);
+                var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                throw new HttpResponseException(resp);
+            }
+        }
+        [HttpGet]
+        [Route("api/chats/{id}/get chat history")]
+        public IEnumerable<ChatsHistoryRecord> GetChatHistoryRecord(Guid id)
+        {
+            Logger.Trace("Попытка получить историю для чата с id {0}", id);
+            try
+            {
+                var result = ChatsRepository.GetChatHistory(id);
+                Logger.Trace("История для чата с id {0} получена", id);
+                return result;
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error(ex.Message);
+                var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                throw new HttpResponseException(resp);
+            }
+        }
     }
 }
