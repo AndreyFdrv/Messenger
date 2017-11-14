@@ -50,7 +50,7 @@
             // lblMessages
             // 
             this.lblMessages.AutoSize = true;
-            this.lblMessages.Location = new System.Drawing.Point(9, 216);
+            this.lblMessages.Location = new System.Drawing.Point(12, 57);
             this.lblMessages.Name = "lblMessages";
             this.lblMessages.Size = new System.Drawing.Size(68, 13);
             this.lblMessages.TabIndex = 1;
@@ -59,22 +59,22 @@
             // flwMessages
             // 
             this.flwMessages.BackColor = System.Drawing.Color.White;
-            this.flwMessages.Location = new System.Drawing.Point(12, 233);
+            this.flwMessages.Location = new System.Drawing.Point(15, 74);
             this.flwMessages.Name = "flwMessages";
-            this.flwMessages.Size = new System.Drawing.Size(398, 201);
+            this.flwMessages.Size = new System.Drawing.Size(641, 401);
             this.flwMessages.TabIndex = 2;
             // 
             // txtMessage
             // 
-            this.txtMessage.Location = new System.Drawing.Point(12, 55);
+            this.txtMessage.Location = new System.Drawing.Point(15, 481);
             this.txtMessage.Name = "txtMessage";
-            this.txtMessage.Size = new System.Drawing.Size(266, 80);
+            this.txtMessage.Size = new System.Drawing.Size(509, 80);
             this.txtMessage.TabIndex = 3;
             this.txtMessage.Text = "";
             // 
             // btnSend
             // 
-            this.btnSend.Location = new System.Drawing.Point(284, 112);
+            this.btnSend.Location = new System.Drawing.Point(530, 481);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(126, 23);
             this.btnSend.TabIndex = 4;
@@ -85,7 +85,7 @@
             // lblAttachedFiles
             // 
             this.lblAttachedFiles.AutoSize = true;
-            this.lblAttachedFiles.Location = new System.Drawing.Point(9, 141);
+            this.lblAttachedFiles.Location = new System.Drawing.Point(12, 569);
             this.lblAttachedFiles.Name = "lblAttachedFiles";
             this.lblAttachedFiles.Size = new System.Drawing.Size(129, 13);
             this.lblAttachedFiles.TabIndex = 5;
@@ -94,16 +94,16 @@
             // lstAttachedFiles
             // 
             this.lstAttachedFiles.FormattingEnabled = true;
-            this.lstAttachedFiles.Location = new System.Drawing.Point(12, 157);
+            this.lstAttachedFiles.Location = new System.Drawing.Point(15, 585);
             this.lstAttachedFiles.Name = "lstAttachedFiles";
-            this.lstAttachedFiles.Size = new System.Drawing.Size(309, 56);
+            this.lstAttachedFiles.Size = new System.Drawing.Size(509, 56);
             this.lstAttachedFiles.TabIndex = 6;
             // 
             // btnAttachFile
             // 
-            this.btnAttachFile.Location = new System.Drawing.Point(327, 177);
+            this.btnAttachFile.Location = new System.Drawing.Point(530, 510);
             this.btnAttachFile.Name = "btnAttachFile";
-            this.btnAttachFile.Size = new System.Drawing.Size(83, 36);
+            this.btnAttachFile.Size = new System.Drawing.Size(126, 26);
             this.btnAttachFile.TabIndex = 7;
             this.btnAttachFile.Text = "Прикрепить файл";
             this.btnAttachFile.UseVisualStyleBackColor = true;
@@ -111,7 +111,7 @@
             // 
             // btnLoadChosenFiles
             // 
-            this.btnLoadChosenFiles.Location = new System.Drawing.Point(284, 12);
+            this.btnLoadChosenFiles.Location = new System.Drawing.Point(530, 585);
             this.btnLoadChosenFiles.Name = "btnLoadChosenFiles";
             this.btnLoadChosenFiles.Size = new System.Drawing.Size(126, 37);
             this.btnLoadChosenFiles.TabIndex = 8;
@@ -121,7 +121,7 @@
             // 
             // btnMakeMessageSelfDestructing
             // 
-            this.btnMakeMessageSelfDestructing.Location = new System.Drawing.Point(284, 69);
+            this.btnMakeMessageSelfDestructing.Location = new System.Drawing.Point(530, 542);
             this.btnMakeMessageSelfDestructing.Name = "btnMakeMessageSelfDestructing";
             this.btnMakeMessageSelfDestructing.Size = new System.Drawing.Size(126, 37);
             this.btnMakeMessageSelfDestructing.TabIndex = 9;
@@ -133,7 +133,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(417, 444);
+            this.ClientSize = new System.Drawing.Size(668, 652);
             this.Controls.Add(this.btnMakeMessageSelfDestructing);
             this.Controls.Add(this.btnLoadChosenFiles);
             this.Controls.Add(this.btnAttachFile);

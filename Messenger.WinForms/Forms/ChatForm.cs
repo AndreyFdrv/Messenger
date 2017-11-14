@@ -89,7 +89,11 @@ namespace Messenger.WinForms.Forms
             flwMessages.Controls.Clear();
             foreach (var message in Messages)
             {
-                var messageControl = new MessageControl(message);
+                Control messageControl;
+                if (message.AttachedFiles.Count() == 0)
+                    messageControl = new MessageControl(message);
+                else
+                    messageControl = new MessageWithFilesControl(message);
                 flwMessages.Controls.Add(messageControl);
             }
         }
@@ -166,7 +170,7 @@ namespace Messenger.WinForms.Forms
             var folderName = dialogForm.SelectedPath;
             for (int i=0; i<Messages.Count; i++)
             {
-                var selected_indices = ((MessageControl)flwMessages.Controls[i]).GetSelectedIndices();
+                var selected_indices = ((MessageWithFilesControl)flwMessages.Controls[i]).GetSelectedIndices();
                 foreach (int j in selected_indices)
                 {
                     var file = Messages[i].AttachedFiles.ToList()[j];

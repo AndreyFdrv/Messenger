@@ -88,6 +88,12 @@
     <Compile Include="Controls\MessageControl.Designer.cs">
       <DependentUpon>MessageControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MessageWithFilesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MessageWithFilesControl.Designer.cs">
+      <DependentUpon>MessageWithFilesControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UsersControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -157,6 +163,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MessageControl.resx">
       <DependentUpon>MessageControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MessageWithFilesControl.resx">
+      <DependentUpon>MessageWithFilesControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UsersControl.resx">
       <DependentUpon>UsersControl.cs</DependentUpon>
