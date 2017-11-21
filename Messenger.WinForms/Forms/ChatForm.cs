@@ -31,7 +31,7 @@ namespace Messenger.WinForms.Forms
             AvatarAndLoginControl.SetAvatar(User.Avatar);
             AvatarAndLoginControl.SetLogin(User.Login);
             flwMessages.AutoScroll = true;
-            flwMessages.FlowDirection = FlowDirection.TopDown;
+            flwMessages.FlowDirection = FlowDirection.BottomUp;
             flwMessages.WrapContents = false;
             UpdateMessages();
             var timer = new System.Windows.Forms.Timer();
@@ -93,6 +93,8 @@ namespace Messenger.WinForms.Forms
                     messageControl = new MessageWithFilesControl(message);
                 flwMessages.Controls.Add(messageControl);
             }
+            if(flwMessages.Controls.Count!=0)
+                flwMessages.ScrollControlIntoView(flwMessages.Controls[0]);
         }
 
         private void btnSend_Click(object sender, EventArgs e)
