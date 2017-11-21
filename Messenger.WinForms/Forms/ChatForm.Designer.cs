@@ -37,7 +37,7 @@
             this.lstAttachedFiles = new System.Windows.Forms.ListBox();
             this.btnAttachFile = new System.Windows.Forms.Button();
             this.btnLoadChosenFiles = new System.Windows.Forms.Button();
-            this.btnMakeMessageSelfDestructing = new System.Windows.Forms.Button();
+            this.chbIsSelfDestructing = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // AvatarAndLoginControl
@@ -119,22 +119,22 @@
             this.btnLoadChosenFiles.UseVisualStyleBackColor = true;
             this.btnLoadChosenFiles.Click += new System.EventHandler(this.btnLoadChosenFiles_Click);
             // 
-            // btnMakeMessageSelfDestructing
+            // chbIsSelfDestructing
             // 
-            this.btnMakeMessageSelfDestructing.Location = new System.Drawing.Point(530, 542);
-            this.btnMakeMessageSelfDestructing.Name = "btnMakeMessageSelfDestructing";
-            this.btnMakeMessageSelfDestructing.Size = new System.Drawing.Size(126, 37);
-            this.btnMakeMessageSelfDestructing.TabIndex = 9;
-            this.btnMakeMessageSelfDestructing.Text = "Сделать сообщение самоудаляющимся";
-            this.btnMakeMessageSelfDestructing.UseVisualStyleBackColor = true;
-            this.btnMakeMessageSelfDestructing.Click += new System.EventHandler(this.btnMakeMessageSelfDestructing_Click);
+            this.chbIsSelfDestructing.AutoSize = true;
+            this.chbIsSelfDestructing.Location = new System.Drawing.Point(531, 543);
+            this.chbIsSelfDestructing.Name = "chbIsSelfDestructing";
+            this.chbIsSelfDestructing.Size = new System.Drawing.Size(126, 30);
+            this.chbIsSelfDestructing.TabIndex = 9;
+            this.chbIsSelfDestructing.Text = "Самоудаляющееся \r\nсообщение";
+            this.chbIsSelfDestructing.UseVisualStyleBackColor = true;
             // 
             // ChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(668, 652);
-            this.Controls.Add(this.btnMakeMessageSelfDestructing);
+            this.Controls.Add(this.chbIsSelfDestructing);
             this.Controls.Add(this.btnLoadChosenFiles);
             this.Controls.Add(this.btnAttachFile);
             this.Controls.Add(this.lstAttachedFiles);
@@ -165,6 +165,6 @@
         private System.Windows.Forms.ListBox lstAttachedFiles;
         private System.Windows.Forms.Button btnAttachFile;
         private System.Windows.Forms.Button btnLoadChosenFiles;
-        private System.Windows.Forms.Button btnMakeMessageSelfDestructing;
+        private System.Windows.Forms.CheckBox chbIsSelfDestructing;
     }
 }

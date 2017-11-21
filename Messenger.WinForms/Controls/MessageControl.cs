@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
-using Messenger.Model;
+﻿using System.Windows.Forms;
+using System.Drawing;
 
 namespace Messenger.WinForms.Controls
 {
@@ -13,6 +12,8 @@ namespace Messenger.WinForms.Controls
             AvatarAndLoginControl.SetLogin(message.Author.Login);
             txtText.Text = message.Text;
             lblDate.Text = message.Date.ToLocalTime().ToString();
+            if(message.IsSelfDestructing)
+                txtText.ForeColor = Color.FromArgb(255, 0, 0);
         }
         public ListBox.SelectedIndexCollection GetSelectedIndices()
         {

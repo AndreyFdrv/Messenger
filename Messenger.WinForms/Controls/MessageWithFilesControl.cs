@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Drawing;
 using System.Windows.Forms;
-using Messenger.Model;
 
 namespace Messenger.WinForms.Controls
 {
@@ -15,6 +14,11 @@ namespace Messenger.WinForms.Controls
             foreach (var file in message.AttachedFiles)
                 lstAttachedFiles.Items.Add(file.Name);
             lblDate.Text = message.Date.ToLocalTime().ToString();
+            if (message.IsSelfDestructing)
+            {
+                txtText.ForeColor = Color.FromArgb(255, 0, 0);
+                lblAttachedFiles.ForeColor = Color.FromArgb(255, 0, 0);
+            }
         }
         public ListBox.SelectedIndexCollection GetSelectedIndices()
         {
